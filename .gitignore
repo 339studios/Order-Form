@@ -1,0 +1,5 @@
+# macOS
+.DS_Store
+
+# Optional: uncomment to keep the Excel source file private
+# *.xlsx

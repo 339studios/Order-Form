@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RWSS Dealership Order Form – Fall 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --red: #FF0033;
+      --white: #FFFFFF;
+      --gray: #F2F2F2;
+      --black: #000000;
+      --bg: var(--white);
+      --surface: var(--gray);
+      --surface2: var(--white);
+      --border: #ddd;
+      --text: var(--black);
+      --text-muted: #555;
+      --accent: var(--red);
+      --accent-hover: #cc0029;
+      --required: var(--red);
+      --success: #22c55e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem; padding-bottom: 3rem; }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem 0;
+      letter-spacing: -0.02em;
+    }
+    .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .header-form {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .header-form h2 { font-size: 1rem; margin: 0 0 1rem 0; color: var(--text-muted); }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem 1.5rem;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .form-group label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .form-group label.required::after { content: ' *'; color: var(--required); }
+    .form-group input,
+    .form-group select {
+      padding: 0.5rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface2);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(255, 0, 51, 0.25);
+    }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+    .tab {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .tab:hover { background: var(--surface2); color: var(--text); }
+    .tab.active { background: var(--accent); color: var(--white); }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .panel h3 { font-size: 1.1rem; margin: 0 0 1rem 0; color: var(--text-muted); }
+    .new-shoes-section { margin-bottom: 2rem; }
+    .new-shoes-section-title { font-size: 1rem; margin: 0 0 0.75rem 0; color: var(--text); }
+    .new-shoes-product-family { margin-bottom: 1.25rem; }
+    .new-shoes-product-family-title { font-size: 0.95rem; margin: 0 0 0.5rem 0; color: var(--text-muted); font-weight: 600; }
+    .new-shoes-style-img { width: 80px; min-width: 80px; padding: 0.35rem; vertical-align: middle; text-align: center; }
+    .new-shoes-style-img img { max-width: 100%; height: auto; max-height: 60px; display: block; margin: 0 auto; }
+    .new-shoes-brand-total { margin-top: 0.75rem; padding: 0.6rem 0.85rem; background: var(--surface2); border-radius: 6px; font-size: 0.95rem; }
+    .new-shoes-brand-total .num-col { color: var(--accent); }
+    .new-shoes-section-meta { font-size: 0.8rem; color: var(--text-muted); margin: 0 0 0.75rem 0; }
+    .new-shoes-grand-total { margin-top: 1rem; padding: 0.75rem 1rem; background: var(--surface2); border-radius: 8px; font-size: 1rem; }
+    .new-shoes-grand-total .num-col { color: var(--accent); }
+    td input[type="number"].size-disabled { background: #e8e8e8; color: var(--text-muted); cursor: not-allowed; }
+    .table-wrap {
+      overflow-x: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 1rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    th, td {
+      padding: 0.5rem 0.65rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      background: var(--surface2);
+      color: var(--text-muted);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    td input[type="number"] {
+      width: 3.5rem;
+      padding: 0.35rem 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--white);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      text-align: right;
+    }
+    td input[type="number"]:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .num-col { text-align: right; }
+    .total-row { font-weight: 700; background: var(--surface2); }
+    .total-row td { border-bottom: none; }
+    .grand-total {
+      margin-top: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+    .grand-total span { color: var(--accent); }
+    .sticky-header {
+      padding-bottom: 0.5rem;
+    }
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--accent);
+    }
+    .page-header-logo {
+      height: 48px;
+      width: auto;
+      display: block;
+    }
+    .page-header-text { flex: 1; }
+    .required-fields-note {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin: 0 0 1rem 0;
+    }
+    html { overflow-y: scroll; }
+    @media (max-width: 768px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .tabs { gap: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sticky-header">
+      <div class="page-header">
+        <img src="images/redwing-trademark.png" alt="Red Wing" class="page-header-logo" />
+        <div class="page-header-text">
+          <h1>FALL 2026 NEW RWSS DEALERSHIP</h1>
+          <p class="subtitle">Order Form — REVISION DATE: 121125</p>
+        </div>
+      </div>
+      <p class="required-fields-note">ALL HIGHLIGHTED FIELDS ARE REQUIRED FIELDS</p>
+
+      <!-- Section 1: Date / Sales Rep / PO -->
+      <div class="header-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="required">DATE</label>
+            <input type="text" id="date" placeholder="MMDDYY" />
+          </div>
+          <div class="form-group">
+            <label class="required">SALES REP</label>
+            <input type="text" id="salesRep" placeholder="Last name only" />
+          </div>
+          <div class="form-group">
+            <label>P.O. #</label>
+            <input type="text" id="po" placeholder="Default PO" />
+          </div>
+          <div class="form-group">
+            <label>PO ENTRY</label>
+            <input type="text" id="poEntry" placeholder="Default PO" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Account / Store / Address -->
+      <div class="header-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="required">ACCOUNT #</label>
+            <input type="text" id="account" />
+          </div>
+          <div class="form-group">
+            <label class="required">STORE NAME</label>
+            <input type="text" id="storeName" />
+          </div>
+          <div class="form-group">
+            <label class="required">ADDRESS</label>
+            <input type="text" id="address" />
+          </div>
+          <div class="form-group">
+            <label>CITY</label>
+            <input type="text" id="city" />
+          </div>
+          <div class="form-group">
+            <label>STATE</label>
+            <input type="text" id="state" />
+          </div>
+          <div class="form-group">
+            <label>ZIP CODE</label>
+            <input type="text" id="zip" />
+          </div>
+          <div class="form-group">
+            <label>Address change?</label>
+            <select id="addressChange">
+              <option value="">NO</option>
+              <option value="YES">YES</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Terms / Our Reference -->
+      <div class="header-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="required">TERMS</label>
+            <select id="terms">
+              <option value="">Select</option>
+              <option value="F">F - NO TERMS</option>
+              <option value="H">H - 90 FFT</option>
+              <option value="L">L - 2% FFT</option>
+              <option value="M">M - 180 FFT</option>
+              <option value="N">N - 4% FFT</option>
+              <option value="O">O - 180 4%</option>
+              <option value="P">P - 8%</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>OUR REFERENCE</label>
+            <input type="text" id="ourRef" />
+          </div>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <button type="button" class="tab active" data-tab="new-shoes" role="tab">NEW SHOES</button>
+        <button type="button" class="tab" data-tab="existing" role="tab">EXISTING</button>
+        <button type="button" class="tab" data-tab="european" role="tab">EUROPEAN SHOES</button>
+        <button type="button" class="tab" data-tab="care" role="tab">CARE PRODUCTS & MISC</button>
+        <button type="button" class="tab" data-tab="socks" role="tab">SOCKS</button>
+        <button type="button" class="tab" data-tab="footbeds" role="tab">FOOTBEDS</button>
+        <button type="button" class="tab" data-tab="belts" role="tab">BELTS</button>
+        <button type="button" class="tab" data-tab="gloves" role="tab">GLOVES & SCUFFS</button>
+        <button type="button" class="tab" data-tab="slippers" role="tab">QUADREX & SLIPPERS</button>
+        <button type="button" class="tab" data-tab="glasses" role="tab">SAFETY GLASSES</button>
+        <button type="button" class="tab" data-tab="qr-belts" role="tab">QR BELTS</button>
+      </div>
+    </div>
+
+    <!-- NEW SHOES -->
+    <section id="panel-new-shoes" class="panel active" role="tabpanel">
+      <h3>NEW SHOES — FALL 2026 PROGRAM</h3>
+
+      <!-- Red Wing -->
+      <div class="new-shoes-section">
+        <h4 class="new-shoes-section-title">Red Wing</h4>
+        <div class="new-shoes-product-family">
+          <h5 class="new-shoes-product-family-title">SuperSole X — Ship: 10/15/26</h5>
+          <div class="table-wrap">
+            <table class="table-new-shoes">
+              <thead>
+                <tr>
+                  <th></th><th>Style</th><th>Width</th>
+                  <th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+                  <th>Total Pr</th><th>Price/Pr</th><th>Total $</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-new-shoes-redwing-supersole"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="new-shoes-product-family">
+          <h5 class="new-shoes-product-family-title">ExosLite — Ship: 08/15/26</h5>
+          <div class="table-wrap">
+            <table class="table-new-shoes">
+              <thead>
+                <tr>
+                  <th></th><th>Style</th><th>Width</th>
+                  <th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+                  <th>Total Pr</th><th>Price/Pr</th><th>Total $</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-new-shoes-redwing-exoslite"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="new-shoes-product-family">
+          <h5 class="new-shoes-product-family-title">IronFlex — Ship: 08/15/26</h5>
+          <div class="table-wrap">
+            <table class="table-new-shoes">
+              <thead>
+                <tr>
+                  <th></th><th>Style</th><th>Width</th>
+                  <th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+                  <th>Total Pr</th><th>Price/Pr</th><th>Total $</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-new-shoes-redwing-ironflex"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="new-shoes-product-family">
+          <h5 class="new-shoes-product-family-title">Construct — Ship: 09/15/26</h5>
+          <div class="table-wrap">
+            <table class="table-new-shoes">
+              <thead>
+                <tr>
+                  <th></th><th>Style</th><th>Width</th>
+                  <th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+                  <th>Total Pr</th><th>Price/Pr</th><th>Total $</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-new-shoes-redwing-construct"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="new-shoes-product-family">
+          <h5 class="new-shoes-product-family-title">VersaPro — Ship: 08/15/26</h5>
+          <div class="table-wrap">
+            <table class="table-new-shoes">
+              <thead>
+                <tr>
+                  <th></th><th>Style</th><th>Width</th>
+                  <th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+                  <th>Total Pr</th><th>Price/Pr</th><th>Total $</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-new-shoes-redwing-versapro"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="new-shoes-product-family">
+          <h5 class="new-shoes-product-family-title">Tecnetic — Ship: 08/15/26</h5>
+          <div class="table-wrap">
+            <table class="table-new-shoes">
+              <thead>
+                <tr>
+                  <th></th><th>Style</th><th>Width</th>
+                  <th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+                  <th>Total Pr</th><th>Price/Pr</th><th>Total $</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-new-shoes-redwing-tecnetic"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="new-shoes-brand-total">
+          <strong>Red Wing total</strong> <span id="new-shoes-redwing-pairs" class="num-col">0</span> pairs &nbsp;|&nbsp; $<span id="new-shoes-redwing-total" class="num-col">0</span>
+        </div>
+      </div>
+
+      <!-- Worx -->
+      <div class="new-shoes-section">
+        <h4 class="new-shoes-section-title">Worx</h4>
+        <div class="new-shoes-product-family">
+          <h5 class="new-shoes-product-family-title">Essentials Edge — Ship: 08/15/26</h5>
+          <div class="table-wrap">
+            <table class="table-new-shoes">
+              <thead>
+                <tr>
+                  <th></th><th>Style</th><th>Width</th>
+                  <th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+                  <th>Total Pr</th><th>Price/Pr</th><th>Total $</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-new-shoes-worx-essentialedge"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="new-shoes-product-family">
+          <h5 class="new-shoes-product-family-title">Cinder</h5>
+          <div class="table-wrap">
+            <table class="table-new-shoes">
+              <thead>
+                <tr>
+                  <th></th><th>Style</th><th>Width</th>
+                  <th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+                  <th>Total Pr</th><th>Price/Pr</th><th>Total $</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-new-shoes-worx-cinder"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="new-shoes-brand-total">
+          <strong>Worx total</strong> <span id="new-shoes-worx-pairs" class="num-col">0</span> pairs &nbsp;|&nbsp; $<span id="new-shoes-worx-total" class="num-col">0</span>
+        </div>
+      </div>
+
+      <!-- Irish Setter -->
+      <div class="new-shoes-section">
+        <h4 class="new-shoes-section-title">Irish Setter</h4>
+        <div class="new-shoes-product-family">
+          <h5 class="new-shoes-product-family-title">Setter Fifty</h5>
+          <div class="table-wrap">
+            <table class="table-new-shoes">
+              <thead>
+                <tr>
+                  <th></th><th>Style</th><th>Width</th>
+                  <th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+                  <th>Total Pr</th><th>Price/Pr</th><th>Total $</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-new-shoes-irishsetter-setterfifty"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="new-shoes-product-family">
+          <h5 class="new-shoes-product-family-title">Trail Lock — Ship: 07/15/26</h5>
+          <div class="table-wrap">
+            <table class="table-new-shoes">
+              <thead>
+                <tr>
+                  <th></th><th>Style</th><th>Width</th>
+                  <th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+                  <th>Total Pr</th><th>Price/Pr</th><th>Total $</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-new-shoes-irishsetter-traillock"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="new-shoes-product-family">
+          <h5 class="new-shoes-product-family-title">Trailblazer — Ship: 07/15/26</h5>
+          <div class="table-wrap">
+            <table class="table-new-shoes">
+              <thead>
+                <tr>
+                  <th></th><th>Style</th><th>Width</th>
+                  <th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+                  <th>Total Pr</th><th>Price/Pr</th><th>Total $</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-new-shoes-irishsetter-trailblazer"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="new-shoes-product-family">
+          <h5 class="new-shoes-product-family-title">Pipestone — Ship: 07/15/26</h5>
+          <div class="table-wrap">
+            <table class="table-new-shoes">
+              <thead>
+                <tr>
+                  <th></th><th>Style</th><th>Width</th>
+                  <th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+                  <th>Total Pr</th><th>Price/Pr</th><th>Total $</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-new-shoes-irishsetter-pipestone"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="new-shoes-product-family">
+          <h5 class="new-shoes-product-family-title">Wingshooter XD — Ship: 07/15/26</h5>
+          <div class="table-wrap">
+            <table class="table-new-shoes">
+              <thead>
+                <tr>
+                  <th></th><th>Style</th><th>Width</th>
+                  <th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+                  <th>Total Pr</th><th>Price/Pr</th><th>Total $</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-new-shoes-irishsetter-wingshooterxd"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="new-shoes-brand-total">
+          <strong>Irish Setter total</strong> <span id="new-shoes-irishsetter-pairs" class="num-col">0</span> pairs &nbsp;|&nbsp; $<span id="new-shoes-irishsetter-total" class="num-col">0</span>
+        </div>
+      </div>
+
+      <div class="new-shoes-grand-total">
+        <strong>NEW SHOES TOTAL</strong> <span id="new-shoes-pairs" class="num-col">0</span> pairs &nbsp;|&nbsp; $<span id="new-shoes-total" class="num-col">0</span>
+      </div>
+    </section>
+
+    <!-- EXISTING -->
+    <section id="panel-existing" class="panel" role="tabpanel">
+      <h3>EXISTING — SEASONAL FALL ORDERS (Aug 1 – Dec 15)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>REQT DATE</th>
+              <th>Style</th>
+              <th>Width</th>
+              <th>1</th><th>2</th><th>3</th><th>4</th><th>4.5</th><th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-existing"></tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="19">EXISTING TOTAL PAIR</td>
+              <td id="existing-total-pair" class="num-col">0</td>
+            </tr>
+            <tr class="total-row">
+              <td colspan="19">EXISTING TOTAL PRICE</td>
+              <td id="existing-total-price" class="num-col">0</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- EUROPEAN SHOES -->
+    <section id="panel-european" class="panel" role="tabpanel">
+      <h3>EUROPEAN SHOES</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>RQT DATE</th>
+              <th>Style</th>
+              <th>34</th><th>35</th><th>36</th><th>37</th><th>38</th><th>39</th><th>40</th><th>41</th><th>42</th><th>43</th><th>44</th><th>45</th><th>46</th><th>47</th><th>48</th><th>49</th><th>50</th>
+              <th>Total Pr</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-european"></tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="19">EUROPEAN TOTAL PAIR</td>
+              <td id="european-total-pair" class="num-col">0</td>
+            </tr>
+            <tr class="total-row">
+              <td colspan="19">EUROPEAN TOTAL PRICE</td>
+              <td id="european-total-price" class="num-col">0</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- CARE PRODUCTS & MISC -->
+    <section id="panel-care" class="panel" role="tabpanel">
+      <h3>CARE PRODUCTS & MISC</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Ship Date</th>
+              <th>Stock #</th>
+              <th>Description</th>
+              <th>Price</th>
+              <th>Unit of Measure</th>
+              <th>Quantity</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-care"></tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="6">Total Care Products</td>
+              <td id="care-total-qty" class="num-col">0</td>
+              <td id="care-total-price" class="num-col">0</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- SOCKS -->
+    <section id="panel-socks" class="panel" role="tabpanel">
+      <h3>SOCKS</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Ship Date</th>
+              <th>Stock #</th>
+              <th>03060</th><th>04070</th><th>06090</th><th>07100</th><th>09120</th><th>10130</th><th>12150</th><th>12160</th>
+              <th>QTY Total</th>
+              <th>Price</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-socks"></tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="10">TOTAL SOCKS</td>
+              <td id="socks-total-qty" class="num-col">0</td>
+              <td></td>
+              <td id="socks-total-price" class="num-col">0</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- FOOTBEDS -->
+    <section id="panel-footbeds" class="panel" role="tabpanel">
+      <h3>FOOTBEDS</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Ship Date</th>
+              <th>Stock #</th>
+              <th>Description</th>
+              <th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+              <th>QTY Total</th>
+              <th>Price</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-footbeds"></tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="17">Total Footbeds</td>
+              <td id="footbeds-total-qty" class="num-col">0</td>
+              <td></td>
+              <td id="footbeds-total-price" class="num-col">0</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- BELTS -->
+    <section id="panel-belts" class="panel" role="tabpanel">
+      <h3>BELTS</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Ship Date</th>
+              <th>Stock #</th>
+              <th>Description</th>
+              <th>W26</th><th>W28</th><th>W30</th><th>W32</th><th>W34</th><th>W36</th><th>W38</th><th>W40</th><th>W42</th><th>W44</th><th>W46</th><th>W48</th><th>W50</th><th>W52</th><th>W54</th>
+              <th>Qty Total</th>
+              <th>Price</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-belts"></tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="19">TOTAL BELTS</td>
+              <td id="belts-total-qty" class="num-col">0</td>
+              <td></td>
+              <td id="belts-total-price" class="num-col">0</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- GLOVES & SCUFFS -->
+    <section id="panel-gloves" class="panel" role="tabpanel">
+      <h3>GLOVES & SCUFFS</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Ship Date</th>
+              <th>Stock #</th>
+              <th>Description</th>
+              <th>XSM</th><th>SML</th><th>MED</th><th>LRG</th><th>XLG</th><th>XXL</th>
+              <th>Qty Total</th>
+              <th>Price</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-gloves"></tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="10">Total Gloves, Misc</td>
+              <td id="gloves-total-qty" class="num-col">0</td>
+              <td></td>
+              <td id="gloves-total-price" class="num-col">0</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- QUADREX & SLIPPERS -->
+    <section id="panel-slippers" class="panel" role="tabpanel">
+      <h3>QUADREX & SLIPPERS — SEASONAL (Aug 1 – Dec 15)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Ship Date</th>
+              <th>Stock #</th>
+              <th>Description</th>
+              <th>Width</th>
+              <th>050</th><th>060</th><th>070</th><th>080</th><th>085</th><th>090</th><th>095</th><th>100</th><th>105</th><th>110</th><th>115</th><th>120</th><th>130</th><th>140</th><th>150</th><th>160</th>
+              <th>Price</th>
+              <th>Qty</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-slippers"></tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="21">TOTAL SLIPPERS</td>
+              <td id="slippers-total-qty" class="num-col">0</td>
+              <td></td>
+              <td id="slippers-total-price" class="num-col">0</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- SAFETY GLASSES -->
+    <section id="panel-glasses" class="panel" role="tabpanel">
+      <h3>SAFETY GLASSES</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Ship Date</th>
+              <th>Stock #</th>
+              <th>Description</th>
+              <th>Price</th>
+              <th>Unit</th>
+              <th>Qty</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-glasses"></tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="5">TOTAL SAFETY GLASSES</td>
+              <td id="glasses-total-qty" class="num-col">0</td>
+              <td id="glasses-total-price" class="num-col">0</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- QR BELTS -->
+    <section id="panel-qr-belts" class="panel" role="tabpanel">
+      <h3>QR BELTS</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Ship Date</th>
+              <th>Stock #</th>
+              <th>Description</th>
+              <th>SML/MED</th>
+              <th>LRG/XLG</th>
+              <th>2XL/3XL</th>
+              <th>Price</th>
+              <th>Qty</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-qr-belts"></tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="6">TOTAL QUICK RELEASE BELTS</td>
+              <td id="qr-belts-total-qty" class="num-col">0</td>
+              <td id="qr-belts-total-price" class="num-col">0</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+    <div class="grand-total">
+      GRAND TOTAL FOOTWEAR $ <span id="grand-total-footwear">0</span> &nbsp;|&nbsp;
+      Order Grand Total (Footwear + Accessories) $ <span id="order-grand-total">0</span>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
