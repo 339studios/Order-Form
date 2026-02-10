@@ -171,7 +171,7 @@
         var firstInGroup = idx === 0 && styleKey;
         var html = '';
         if (firstInGroup) {
-          html += '<td class="new-shoes-style-img" rowspan="' + styleRows.length + '"><img src="images/' + styleKey + '.png" alt="' + styleKey + '"></td>';
+          html += '<td class="new-shoes-style-img" rowspan="' + styleRows.length + '"><img src="Images/' + styleKey + '.png" alt="' + styleKey + '"></td>';
         } else if (!styleKey) {
           html += '<td></td>';
         }
