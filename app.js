@@ -146,6 +146,14 @@
   var newShoesPackageQuantities = { redwing: { A: { B: { "9":1,"9.5":1,"10":1,"10.5":1,"11":1,"12":1 }, D: { "8":1,"8.5":1,"9":2,"9.5":2,"10":3,"10.5":3,"11":3,"11.5":1,"12":2,"13":1 }, E2: { "8.5":1,"9":1,"9.5":1,"10":2,"10.5":2,"11":2,"11.5":1,"12":1,"13":1 }, H: { "9":1,"9.5":1,"10":1,"10.5":1,"11":1,"12":1 }, E3: { "9":1,"9.5":1,"10":1,"10.5":1,"11":1,"12":1 } }, B: { D: { "8.5":1,"9":2,"9.5":2,"10":3,"10.5":3,"11":3,"11.5":1,"12":2,"13":1 }, E2: { "9.5":1,"10":2,"10.5":2,"11":2,"11.5":1,"12":1 } }, C: { D: { "8.5":1,"9":1,"9.5":2,"10":2,"10.5":2,"11":2,"11.5":1,"12":2 }, E2: { "9":1,"9.5":1,"10":1,"10.5":1,"11":1,"12":1 } }, D: { D: { "9":1,"9.5":1,"10":2,"10.5":2,"11":1,"11.5":1,"12":1 }, E2: { "10":1,"10.5":1,"11":1 } } }, worx: { A: { M: { "8":1,"8.5":1,"9":2,"9.5":2,"10":3,"10.5":3,"11":3,"11.5":1,"12":2,"13":1 }, W2: { "8.5":1,"9":1,"9.5":1,"10":2,"10.5":2,"11":2,"11.5":1,"12":1,"13":1 }, W: { "7":1,"7.5":1,"8":2,"8.5":2,"9":1,"9.5":1,"10":1 } }, B: { M: { "8.5":1,"9":2,"9.5":2,"10":3,"10.5":3,"11":3,"11.5":1,"12":2,"13":1 }, W2: { "9.5":1,"10":2,"10.5":2,"11":2,"11.5":1,"12":1 }, W: { "7.5":1,"8":1,"8.5":1,"9":1 } }, C: { M: { "8.5":1,"9":1,"9.5":2,"10":2,"10.5":2,"11":2,"11.5":1,"12":2 }, W2: { "9":1,"9.5":1,"10":1,"10.5":1,"11":1,"12":1 } }, D: { M: { "9":1,"9.5":1,"10":2,"10.5":2,"11":1,"11.5":1,"12":1 }, W2: { "10":1,"10.5":1,"11":1 } } }, irishsetter: { A: { D: { "8":1,"8.5":1,"9":2,"9.5":2,"10":3,"10.5":3,"11":3,"11.5":1,"12":2,"13":1 }, E2: { "8.5":1,"9":1,"9.5":1,"10":2,"10.5":2,"11":2,"11.5":1,"12":1,"13":1 }, B: { "6":1,"6.5":1,"7":1,"7.5":2,"8":2,"8.5":2,"9":1,"9.5":1,"10":1 } }, B: { D: { "8.5":1,"9":2,"9.5":2,"10":3,"10.5":3,"11":3,"11.5":1,"12":2,"13":1 }, E2: { "9.5":1,"10":2,"10.5":2,"11":2,"11.5":1,"12":1 }, B: { "7":1,"7.5":2,"8":2,"8.5":2,"9":1 } }, C: { D: { "8.5":1,"9":1,"9.5":2,"10":2,"10.5":2,"11":2,"11.5":1,"12":2 }, E2: { "9":1,"9.5":1,"10":1,"10.5":1,"11":1,"12":1 } }, D: { D: { "9":1,"9.5":1,"10":2,"10.5":2,"11":1,"11.5":1,"12":1 }, E2: { "10":1,"10.5":1,"11":1 } } } };
 
   // Base path for images (works on GitHub Pages subpath and locally)
+  function formatCurrency(n) {
+    var num = Math.round(Number(n)) || 0;
+    return '$' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+  function parseCurrencyText(text) {
+    return parseInt(String(text).replace(/[$,]/g, ''), 10) || 0;
+  }
+
   function fillPackageQuantitiesToStyleGroup(trWithSelect, packageVal) {
     var tbody = trWithSelect.closest('tbody');
     if (!tbody) return;
@@ -250,11 +258,31 @@
           var totalCell = tr.querySelector('.new-shoes-row-total');
           var pricePerPair = (newShoesStylePrice[tr.dataset.style] != null) ? newShoesStylePrice[tr.dataset.style] : defaultPricePerPair;
           if (pairCell) pairCell.textContent = sum;
-          if (totalCell) totalCell.textContent = sum * pricePerPair;
+          if (totalCell) totalCell.textContent = formatCurrency(sum * pricePerPair);
         });
       });
     });
+    updateNewShoesFamilyTotals();
     updateNewShoesTotals();
+  }
+
+  function updateNewShoesFamilyTotals() {
+    Object.keys(newShoesBrandConfig).forEach(function (key) {
+      var config = newShoesBrandConfig[key];
+      config.productFamilies.forEach(function (pf) {
+        var tbody = document.getElementById(pf.tbodyId);
+        if (!tbody) return;
+        var pairs = 0, dollars = 0;
+        tbody.querySelectorAll('tr').forEach(function (tr) {
+          var p = tr.querySelector('.new-shoes-total-pairs');
+          var t = tr.querySelector('.new-shoes-row-total');
+          if (p) pairs += parseInt(p.textContent, 10) || 0;
+          if (t) dollars += parseCurrencyText(t.textContent);
+        });
+        var el = document.querySelector('.new-shoes-family-total[data-tbody-id="' + pf.tbodyId + '"]');
+        if (el) el.textContent = pairs + ' pr | ' + formatCurrency(dollars);
+      });
+    });
   }
 
   function updateNewShoesTotals() {
@@ -270,7 +298,7 @@
             var p = tr.querySelector('.new-shoes-total-pairs');
             var t = tr.querySelector('.new-shoes-row-total');
             if (p) brandPairs += parseInt(p.textContent, 10) || 0;
-            if (t) brandDollars += parseInt(t.textContent, 10) || 0;
+            if (t) brandDollars += parseCurrencyText(t.textContent);
           });
         }
       });
@@ -279,13 +307,12 @@
       var elP = document.getElementById(config.pairsId);
       var elT = document.getElementById(config.totalId);
       if (elP) elP.textContent = brandPairs;
-      if (elT) elT.textContent = brandDollars;
+      if (elT) elT.textContent = formatCurrency(brandDollars);
     });
     var elPairs = document.getElementById('new-shoes-pairs');
     var elTotal = document.getElementById('new-shoes-total');
     if (elPairs) elPairs.textContent = totalPairs;
-    if (elTotal) elTotal.textContent = totalDollars;
-    updateGrandTotals();
+    if (elTotal) elTotal.textContent = formatCurrency(totalDollars);
   }
 
   // ─── EXISTING: manual entry rows ────────────────────────────────────────
@@ -320,7 +347,6 @@
     var elPr = document.getElementById('existing-total-price');
     if (elP) elP.textContent = totalPair;
     if (elPr) elPr.textContent = totalPrice;
-    updateGrandTotals();
   }
 
   // ─── CARE PRODUCTS ──────────────────────────────────────────────────────
@@ -379,90 +405,6 @@
     var elP = document.getElementById('care-total-price');
     if (elQ) elQ.textContent = totalQty;
     if (elP) elP.textContent = totalPrice;
-    updateGrandTotals();
-  }
-
-  // ─── SOCKS ──────────────────────────────────────────────────────────────
-  var sockSizes = ['03060','04070','06090','07100','09120','10130','12150','12160'];
-  function renderSocks() {
-    var tbody = document.getElementById('tbody-socks');
-    tbody.innerHTML = '';
-    var rows = [
-      { shipDate: '', stock: '', desc: '6 pr.', price: 0 },
-      { shipDate: '', stock: '', desc: '6 pr.', price: 0 },
-      { shipDate: '', stock: '', desc: '6 pr.', price: 0 },
-      { shipDate: '', stock: '', desc: '6 pr.', price: 0 }
-    ];
-    rows.forEach(function (row) {
-      var tr = document.createElement('tr');
-      tr.innerHTML = '<td><input type="text" placeholder="Ship Date"></td><td><input type="text"></td>';
-      sockSizes.forEach(function () {
-        tr.innerHTML += '<td><input type="number" min="0" value="0" class="sock-size"></td>';
-      });
-      tr.innerHTML += '<td class="num-col sock-row-qty">0</td><td class="num-col">—</td><td class="num-col sock-row-total">0</td>';
-      tbody.appendChild(tr);
-      tr.querySelectorAll('.sock-size').forEach(function (inp) {
-        inp.addEventListener('input', function () {
-          var sum = 0;
-          tr.querySelectorAll('.sock-size').forEach(function (i) { sum += parseInt(i.value, 10) || 0; });
-          tr.querySelector('.sock-row-qty').textContent = sum;
-          tr.querySelector('.sock-row-total').textContent = sum * (row.price || 0);
-          updateSocksTotals();
-        });
-      });
-    });
-  }
-
-  function updateSocksTotals() {
-    var tbody = document.getElementById('tbody-socks');
-    var totalQty = 0, totalPrice = 0;
-    tbody.querySelectorAll('tr').forEach(function (tr) {
-      var q = tr.querySelector('.sock-row-qty');
-      var t = tr.querySelector('.sock-row-total');
-      if (q) totalQty += parseInt(q.textContent, 10) || 0;
-      if (t) totalPrice += parseInt(t.textContent, 10) || 0;
-    });
-    setText('socks-total-qty', totalQty);
-    setText('socks-total-price', totalPrice);
-    updateGrandTotals();
-  }
-
-  // ─── FOOTBEDS ────────────────────────────────────────────────────────────
-  var footbedSizes = ['3','4','5','6','7','8','9','10','11','12','13','14','15','16'];
-  function renderFootbeds() {
-    var tbody = document.getElementById('tbody-footbeds');
-    tbody.innerHTML = '';
-    var row = { shipDate: '', stock: '16.5', desc: '', price: 0 };
-    var tr = document.createElement('tr');
-    tr.innerHTML = '<td><input type="text"></td><td>' + row.stock + '</td><td><input type="text"></td>';
-    footbedSizes.forEach(function () {
-      tr.innerHTML += '<td><input type="number" min="0" value="0" class="footbed-size"></td>';
-    });
-    tr.innerHTML += '<td class="num-col footbed-row-qty">0</td><td class="num-col">—</td><td class="num-col footbed-row-total">0</td>';
-    tbody.appendChild(tr);
-    tr.querySelectorAll('.footbed-size').forEach(function (inp) {
-      inp.addEventListener('input', function () {
-        var sum = 0;
-        tr.querySelectorAll('.footbed-size').forEach(function (i) { sum += parseInt(i.value, 10) || 0; });
-        tr.querySelector('.footbed-row-qty').textContent = sum;
-        tr.querySelector('.footbed-row-total').textContent = 0;
-        updateFootbedsTotals();
-      });
-    });
-  }
-
-  function updateFootbedsTotals() {
-    var tbody = document.getElementById('tbody-footbeds');
-    var totalQty = 0, totalPrice = 0;
-    tbody.querySelectorAll('tr').forEach(function (tr) {
-      var q = tr.querySelector('.footbed-row-qty');
-      var t = tr.querySelector('.footbed-row-total');
-      if (q) totalQty += parseInt(q.textContent, 10) || 0;
-      if (t) totalPrice += parseInt(t.textContent, 10) || 0;
-    });
-    setText('footbeds-total-qty', totalQty);
-    setText('footbeds-total-price', totalPrice);
-    updateGrandTotals();
   }
 
   // ─── BELTS ───────────────────────────────────────────────────────────────
@@ -505,7 +447,6 @@
     });
     setText('belts-total-qty', totalQty);
     setText('belts-total-price', totalPrice);
-    updateGrandTotals();
   }
 
   // ─── GLOVES ──────────────────────────────────────────────────────────────
@@ -548,7 +489,6 @@
     });
     setText('gloves-total-qty', totalQty);
     setText('gloves-total-price', totalPrice);
-    updateGrandTotals();
   }
 
   // ─── SLIPPERS ────────────────────────────────────────────────────────────
@@ -596,78 +536,18 @@
     });
     setText('slippers-total-qty', totalQty);
     setText('slippers-total-price', totalPrice.toFixed(2));
-    updateGrandTotals();
   }
 
-  // ─── SAFETY GLASSES ──────────────────────────────────────────────────────
-  function renderGlasses() {
-    var tbody = document.getElementById('tbody-glasses');
-    tbody.innerHTML = '';
-    for (var i = 0; i < 10; i++) {
-      var tr = document.createElement('tr');
-      tr.innerHTML = '<td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="number" min="0" class="glass-price" placeholder="Price"></td><td>12 pair</td><td><input type="number" min="0" value="0" class="glass-qty"></td><td class="num-col glass-row-total">0</td>';
-      tbody.appendChild(tr);
-      var priceInp = tr.querySelector('.glass-price');
-      var qtyInp = tr.querySelector('.glass-qty');
-      function updateRow() {
-        var price = parseFloat(priceInp.value) || 0;
-        var qty = parseInt(qtyInp.value, 10) || 0;
-        tr.querySelector('.glass-row-total').textContent = (price * qty).toFixed(2);
-        updateGlassesTotals();
-      }
-      priceInp.addEventListener('input', updateRow);
-      qtyInp.addEventListener('input', updateRow);
-    }
-  }
-
-  function updateGlassesTotals() {
-    var tbody = document.getElementById('tbody-glasses');
-    var totalQty = 0, totalPrice = 0;
-    tbody.querySelectorAll('tr').forEach(function (tr) {
-      var q = tr.querySelector('.glass-qty');
-      var t = tr.querySelector('.glass-row-total');
-      if (q) totalQty += parseInt(q.value, 10) || 0;
-      if (t) totalPrice += parseFloat(t.textContent) || 0;
-    });
-    setText('glasses-total-qty', totalQty);
-    setText('glasses-total-price', totalPrice.toFixed(2));
-    updateGrandTotals();
-  }
-
-  function setText(id, val) {
+    function setText(id, val) {
     var el = document.getElementById(id);
     if (el) el.textContent = val;
-  }
-
-  // ─── Grand totals ────────────────────────────────────────────────────────
-  function updateGrandTotals() {
-    var newShoes = parseInt(document.getElementById('new-shoes-total')?.textContent || '0', 10);
-    var existing = parseInt(document.getElementById('existing-total-price')?.textContent || '0', 10);
-    var care = parseFloat(document.getElementById('care-total-price')?.textContent || '0');
-    var socks = parseFloat(document.getElementById('socks-total-price')?.textContent || '0');
-    var footbeds = parseFloat(document.getElementById('footbeds-total-price')?.textContent || '0');
-    var belts = parseFloat(document.getElementById('belts-total-price')?.textContent || '0');
-    var gloves = parseFloat(document.getElementById('gloves-total-price')?.textContent || '0');
-    var slippers = parseFloat(document.getElementById('slippers-total-price')?.textContent || '0');
-    var glasses = parseFloat(document.getElementById('glasses-total-price')?.textContent || '0');
-
-    var grandFootwear = newShoes + existing;
-    var totalAccess = care + socks + footbeds + belts + gloves + slippers + glasses;
-    var orderGrand = grandFootwear + totalAccess;
-
-    setText('grand-total-footwear', grandFootwear.toLocaleString());
-    setText('order-grand-total', orderGrand.toLocaleString());
   }
 
   // ─── Init ───────────────────────────────────────────────────────────────
   renderNewShoes();
   renderExisting();
   renderCare();
-  renderSocks();
-  renderFootbeds();
   renderBelts();
   renderGloves();
   renderSlippers();
-  renderGlasses();
-  updateGrandTotals();
-})();
+  })();
