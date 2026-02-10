@@ -114,10 +114,12 @@
     .new-shoes-style-img .new-shoes-style-price { display: block; font-size: 0.8rem; margin-top: 0.25rem; color: var(--text-muted); }
     .table-new-shoes { table-layout: auto; min-width: max-content; }
     .table-new-shoes td.new-shoes-size-cell { min-width: 3.5rem; box-sizing: border-box; }
-    .table-new-shoes th:nth-child(n+3):nth-last-child(n+4) { min-width: 3.5rem; }
+    .table-new-shoes th:nth-child(n+4):nth-last-child(n+3) { min-width: 3.5rem; }
+    .table-new-shoes .new-shoes-package,
     .table-new-shoes .new-shoes-width,
     .table-new-shoes .new-shoes-total-pairs,
     .table-new-shoes .new-shoes-row-total { text-align: center; }
+    .table-new-shoes .new-shoes-package-select { font-size: 0.85rem; padding: 0.25rem 0.4rem; min-width: 2.5rem; }
     .new-shoes-brand-total { margin-top: 0.75rem; padding: 0.6rem 0.85rem; background: var(--surface2); border-radius: 6px; font-size: 0.95rem; }
     .new-shoes-brand-total .num-col { color: var(--accent); }
     .new-shoes-section-meta { font-size: 0.8rem; color: var(--text-muted); margin: 0 0 0.75rem 0; }
@@ -336,7 +338,7 @@
             <table class="table-new-shoes">
               <thead>
                 <tr>
-                  <th>Style</th><th>Width</th>
+                  <th>Style</th><th>Package</th><th>Width</th>
                   <th>4</th><th>4.5</th><th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
                   <th>Total Pr</th><th>Total $</th>
                 </tr>
@@ -351,7 +353,7 @@
             <table class="table-new-shoes">
               <thead>
                 <tr>
-                  <th>Style</th><th>Width</th>
+                  <th>Style</th><th>Package</th><th>Width</th>
                   <th>4</th><th>4.5</th><th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
                   <th>Total Pr</th><th>Total $</th>
                 </tr>
@@ -366,7 +368,7 @@
             <table class="table-new-shoes">
               <thead>
                 <tr>
-                  <th>Style</th><th>Width</th>
+                  <th>Style</th><th>Package</th><th>Width</th>
                   <th>4</th><th>4.5</th><th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
                   <th>Total Pr</th><th>Total $</th>
                 </tr>
@@ -381,7 +383,7 @@
             <table class="table-new-shoes">
               <thead>
                 <tr>
-                  <th>Style</th><th>Width</th>
+                  <th>Style</th><th>Package</th><th>Width</th>
                   <th>4</th><th>4.5</th><th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
                   <th>Total Pr</th><th>Total $</th>
                 </tr>
@@ -396,7 +398,7 @@
             <table class="table-new-shoes">
               <thead>
                 <tr>
-                  <th>Style</th><th>Width</th>
+                  <th>Style</th><th>Package</th><th>Width</th>
                   <th>4</th><th>4.5</th><th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
                   <th>Total Pr</th><th>Total $</th>
                 </tr>
@@ -419,7 +421,7 @@
             <table class="table-new-shoes">
               <thead>
                 <tr>
-                  <th>Style</th><th>Width</th>
+                  <th>Style</th><th>Package</th><th>Width</th>
                   <th>4</th><th>4.5</th><th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
                   <th>Total Pr</th><th>Total $</th>
                 </tr>
@@ -434,7 +436,7 @@
             <table class="table-new-shoes">
               <thead>
                 <tr>
-                  <th>Style</th><th>Width</th>
+                  <th>Style</th><th>Package</th><th>Width</th>
                   <th>4</th><th>4.5</th><th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
                   <th>Total Pr</th><th>Total $</th>
                 </tr>
@@ -457,7 +459,7 @@
             <table class="table-new-shoes">
               <thead>
                 <tr>
-                  <th>Style</th><th>Width</th>
+                  <th>Style</th><th>Package</th><th>Width</th>
                   <th>4</th><th>4.5</th><th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
                   <th>Total Pr</th><th>Total $</th>
                 </tr>
@@ -472,7 +474,7 @@
             <table class="table-new-shoes">
               <thead>
                 <tr>
-                  <th>Style</th><th>Width</th>
+                  <th>Style</th><th>Package</th><th>Width</th>
                   <th>4</th><th>4.5</th><th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
                   <th>Total Pr</th><th>Total $</th>
                 </tr>
@@ -487,7 +489,7 @@
             <table class="table-new-shoes">
               <thead>
                 <tr>
-                  <th>Style</th><th>Width</th>
+                  <th>Style</th><th>Package</th><th>Width</th>
                   <th>4</th><th>4.5</th><th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
                   <th>Total Pr</th><th>Total $</th>
                 </tr>
@@ -502,7 +504,7 @@
             <table class="table-new-shoes">
               <thead>
                 <tr>
-                  <th>Style</th><th>Width</th>
+                  <th>Style</th><th>Package</th><th>Width</th>
                   <th>4</th><th>4.5</th><th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
                   <th>Total Pr</th><th>Total $</th>
                 </tr>

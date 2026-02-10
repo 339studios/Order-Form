@@ -138,15 +138,38 @@
     }
   };
   var defaultPricePerPair = 150;
+  // Price per pair by style from Excel NEW SHOES Price/Pr column
+  var newShoesStylePrice = { "1720": 135, "2543": 180, "2668": 145, "2669": 140, "3054": 120, "3056": 115, "3057": 120, "3058": 125, "3059": 135, "3577": 190, "3580": 190, "3593": 157.5, "3740": 145, "3741": 130, "3742": 145, "3953": 115, "3954": 120, "3955": 120, "3956": 125, "3967": 117.5, "3968": 117.5, "5077": 60, "5193": 60, "5195": 72.5, "83892": 140, "84600": 75, "84602": 75, "84603": 70, "84604": 75, "84670": 140, "84672": 135, "84675": 125 };
+  // Package size/width distribution from Excel SKU Dist (brand -> package -> width -> sizes)
+  var newShoesPackageSizes = { redwing: { A: { B: ["6","6.5","7","7.5","8","8.5","9","9.5","10","10.5","11","12"], D: ["7","7.5","8","8.5","9","9.5","10","10.5","11","11.5","12","13"], E2: ["8.5","9","9.5","10","10.5","11","11.5","12","13"], H: ["9","9.5","10","10.5","11","12"], E3: ["9","9.5","10","10.5","11","12"] }, B: { B: ["7","7.5","8","8.5","9"], D: ["7.5","8","8.5","9","9.5","10","10.5","11","11.5","12","13"], E2: ["9.5","10","10.5","11","11.5","12"], H: [], E3: [] }, C: { B: [], D: ["8.5","9","9.5","10","10.5","11","11.5","12"], E2: ["9","9.5","10","10.5","11","12"], H: [], E3: [] }, D: { B: [], D: ["9","9.5","10","10.5","11","11.5","12"], E2: ["10","10.5","11"], H: [], E3: [] } }, worx: { A: { M: ["6","6.5","7","7.5","8","8.5","9","9.5","10","10.5","11","11.5","12","13"], W2: ["8.5","9","9.5","10","10.5","11","11.5","12","13"], W: ["7","7.5","8","8.5","9","9.5","10"] }, B: { M: ["7","7.5","8","8.5","9","9.5","10","10.5","11","11.5","12","13"], W2: ["9.5","10","10.5","11","11.5","12"], W: ["7.5","8","8.5","9"] }, C: { M: ["8.5","9","9.5","10","10.5","11","11.5","12"], W2: ["9","9.5","10","10.5","11","12"] }, D: { M: ["9","9.5","10","10.5","11","11.5","12"], W2: ["10","10.5","11"] } }, irishsetter: { A: { D: ["7","7.5","8","8.5","9","9.5","10","10.5","11","11.5","12","13"], E2: ["8.5","9","9.5","10","10.5","11","11.5","12","13"], B: ["6","6.5","7","7.5","8","8.5","9","9.5","10"] }, B: { D: ["7.5","8","8.5","9","9.5","10","10.5","11","11.5","12","13"], E2: ["9.5","10","10.5","11","11.5","12"], B: ["7","7.5","8","8.5","9"] }, C: { D: ["8.5","9","9.5","10","10.5","11","11.5","12"], E2: ["9","9.5","10","10.5","11","12"] }, D: { D: ["9","9.5","10","10.5","11","11.5","12"], E2: ["10","10.5","11"] } } };
+  // Package quantities from Excel SKU Dist (brand -> package -> width -> { size: qty })
+  var newShoesPackageQuantities = { redwing: { A: { B: { "9":1,"9.5":1,"10":1,"10.5":1,"11":1,"12":1 }, D: { "8":1,"8.5":1,"9":2,"9.5":2,"10":3,"10.5":3,"11":3,"11.5":1,"12":2,"13":1 }, E2: { "8.5":1,"9":1,"9.5":1,"10":2,"10.5":2,"11":2,"11.5":1,"12":1,"13":1 }, H: { "9":1,"9.5":1,"10":1,"10.5":1,"11":1,"12":1 }, E3: { "9":1,"9.5":1,"10":1,"10.5":1,"11":1,"12":1 } }, B: { D: { "8.5":1,"9":2,"9.5":2,"10":3,"10.5":3,"11":3,"11.5":1,"12":2,"13":1 }, E2: { "9.5":1,"10":2,"10.5":2,"11":2,"11.5":1,"12":1 } }, C: { D: { "8.5":1,"9":1,"9.5":2,"10":2,"10.5":2,"11":2,"11.5":1,"12":2 }, E2: { "9":1,"9.5":1,"10":1,"10.5":1,"11":1,"12":1 } }, D: { D: { "9":1,"9.5":1,"10":2,"10.5":2,"11":1,"11.5":1,"12":1 }, E2: { "10":1,"10.5":1,"11":1 } } }, worx: { A: { M: { "8":1,"8.5":1,"9":2,"9.5":2,"10":3,"10.5":3,"11":3,"11.5":1,"12":2,"13":1 }, W2: { "8.5":1,"9":1,"9.5":1,"10":2,"10.5":2,"11":2,"11.5":1,"12":1,"13":1 }, W: { "7":1,"7.5":1,"8":2,"8.5":2,"9":1,"9.5":1,"10":1 } }, B: { M: { "8.5":1,"9":2,"9.5":2,"10":3,"10.5":3,"11":3,"11.5":1,"12":2,"13":1 }, W2: { "9.5":1,"10":2,"10.5":2,"11":2,"11.5":1,"12":1 }, W: { "7.5":1,"8":1,"8.5":1,"9":1 } }, C: { M: { "8.5":1,"9":1,"9.5":2,"10":2,"10.5":2,"11":2,"11.5":1,"12":2 }, W2: { "9":1,"9.5":1,"10":1,"10.5":1,"11":1,"12":1 } }, D: { M: { "9":1,"9.5":1,"10":2,"10.5":2,"11":1,"11.5":1,"12":1 }, W2: { "10":1,"10.5":1,"11":1 } } }, irishsetter: { A: { D: { "8":1,"8.5":1,"9":2,"9.5":2,"10":3,"10.5":3,"11":3,"11.5":1,"12":2,"13":1 }, E2: { "8.5":1,"9":1,"9.5":1,"10":2,"10.5":2,"11":2,"11.5":1,"12":1,"13":1 }, B: { "6":1,"6.5":1,"7":1,"7.5":2,"8":2,"8.5":2,"9":1,"9.5":1,"10":1 } }, B: { D: { "8.5":1,"9":2,"9.5":2,"10":3,"10.5":3,"11":3,"11.5":1,"12":2,"13":1 }, E2: { "9.5":1,"10":2,"10.5":2,"11":2,"11.5":1,"12":1 }, B: { "7":1,"7.5":2,"8":2,"8.5":2,"9":1 } }, C: { D: { "8.5":1,"9":1,"9.5":2,"10":2,"10.5":2,"11":2,"11.5":1,"12":2 }, E2: { "9":1,"9.5":1,"10":1,"10.5":1,"11":1,"12":1 } }, D: { D: { "9":1,"9.5":1,"10":2,"10.5":2,"11":1,"11.5":1,"12":1 }, E2: { "10":1,"10.5":1,"11":1 } } } };
 
   // Base path for images (works on GitHub Pages subpath and locally)
+  function fillPackageQuantitiesToStyleGroup(trWithSelect, packageVal) {
+    var tbody = trWithSelect.closest('tbody');
+    if (!tbody) return;
+    var brand = trWithSelect.dataset.brand;
+    var style = trWithSelect.dataset.style;
+    var styleRows = tbody.querySelectorAll('tr[data-style="' + style + '"]');
+    styleRows.forEach(function (tr) {
+      var width = tr.dataset.width;
+      var qtyMap = (packageVal && newShoesPackageQuantities[brand] && newShoesPackageQuantities[brand][packageVal] && newShoesPackageQuantities[brand][packageVal][width]) ? newShoesPackageQuantities[brand][packageVal][width] : {};
+      tr.querySelectorAll('input.new-shoes-size').forEach(function (inp) {
+        var s = inp.getAttribute('data-size');
+        inp.value = (qtyMap[s] != null) ? String(qtyMap[s]) : '';
+      });
+    });
+    updateNewShoesRow();
+  }
+
   function getImagesBase() {
     var base = (location.pathname || '').replace(/\/?index\.html$/i, '');
     if (base && !/\/$/.test(base)) base = base + '/';
     return base || '';
   }
 
-  function renderNewShoesBrand(tbodyId, rows) {
+  function renderNewShoesBrand(tbodyId, rows, brandKey) {
     var tbody = document.getElementById(tbodyId);
     if (!tbody) return;
     tbody.innerHTML = '';
@@ -161,16 +184,21 @@
       var styleRows = rows.filter(function (r) { return (r.style || '') === styleKey; });
       styleRows.forEach(function (row, idx) {
         var tr = document.createElement('tr');
+        tr.dataset.brand = brandKey;
+        tr.dataset.style = row.style || '';
+        tr.dataset.width = row.width || '';
         var firstInGroup = idx === 0 && styleKey;
+        var pricePerPair = (newShoesStylePrice[styleKey] != null) ? newShoesStylePrice[styleKey] : defaultPricePerPair;
         var html = '';
         if (firstInGroup) {
-          html += '<td class="new-shoes-style-img" rowspan="' + styleRows.length + '"><span class="new-shoes-style-num">' + styleKey + '</span><img src="' + getImagesBase() + 'Images/' + styleKey + '.png" alt="' + styleKey + '"><span class="new-shoes-style-price">$' + defaultPricePerPair + '</span></td>';
+          html += '<td class="new-shoes-style-img" rowspan="' + styleRows.length + '"><span class="new-shoes-style-num">' + styleKey + '</span><img src="' + getImagesBase() + 'Images/' + styleKey + '.png" alt="' + styleKey + '"><span class="new-shoes-style-price">$' + pricePerPair + '</span></td>';
+          html += '<td class="new-shoes-package" rowspan="' + styleRows.length + '"><select class="new-shoes-package-select"><option value="" selected></option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select></td>';
         } else if (!styleKey) {
-          html += '<td></td>';
+          html += '<td></td><td></td>';
         }
         html += '<td class="new-shoes-width">' + (row.width || '') + '</td>';
-        var key = row.style + '-' + row.width;
-        var avail = newShoesAvailableSizes[key];
+        var rowKey = row.style + '-' + row.width;
+        var avail = newShoesAvailableSizes[rowKey];
         if (!avail && row.sizesEnd != null) {
           var end = row.sizesEnd;
           avail = newShoesSizes.filter(function (s) { return parseFloat(s, 10) <= end; });
@@ -178,7 +206,7 @@
         if (!avail) avail = newShoesSizes.slice();
         newShoesSizes.forEach(function (s) {
           if (avail.indexOf(s) !== -1) {
-            html += '<td class="new-shoes-size-cell"><input type="number" min="0" step="1" data-size="' + s + '" value="0" class="new-shoes-size"></td>';
+            html += '<td class="new-shoes-size-cell"><input type="number" min="0" step="1" data-size="' + s + '" class="new-shoes-size"></td>';
           } else {
             html += '<td class="cell-unavailable new-shoes-size-cell"></td>';
           }
@@ -186,9 +214,14 @@
         html += '<td class="num-col new-shoes-total-pairs">0</td><td class="num-col new-shoes-row-total">0</td>';
         tr.innerHTML = html;
         tbody.appendChild(tr);
-        tr.querySelectorAll('input:not([disabled])').forEach(function (input) {
+        tr.querySelectorAll('input.new-shoes-size').forEach(function (input) {
           input.addEventListener('input', updateNewShoesRow);
         });
+        if (firstInGroup && styleKey) {
+          tr.querySelector('.new-shoes-package-select').addEventListener('change', function () {
+            fillPackageQuantitiesToStyleGroup(tr, this.value);
+          });
+        }
       });
     });
   }
@@ -197,7 +230,7 @@
     Object.keys(newShoesBrandConfig).forEach(function (key) {
       var config = newShoesBrandConfig[key];
       config.productFamilies.forEach(function (pf) {
-        renderNewShoesBrand(pf.tbodyId, pf.rows);
+        renderNewShoesBrand(pf.tbodyId, pf.rows, key);
       });
     });
   }
@@ -215,8 +248,9 @@
           inputs.forEach(function (inp) { sum += parseInt(inp.value, 10) || 0; });
           var pairCell = tr.querySelector('.new-shoes-total-pairs');
           var totalCell = tr.querySelector('.new-shoes-row-total');
+          var pricePerPair = (newShoesStylePrice[tr.dataset.style] != null) ? newShoesStylePrice[tr.dataset.style] : defaultPricePerPair;
           if (pairCell) pairCell.textContent = sum;
-          if (totalCell) totalCell.textContent = sum * defaultPricePerPair;
+          if (totalCell) totalCell.textContent = sum * pricePerPair;
         });
       });
     });
