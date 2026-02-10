@@ -80,31 +80,10 @@
       border-color: var(--accent);
       box-shadow: 0 0 0 2px rgba(255, 0, 51, 0.25);
     }
-    .tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.25rem;
-      margin-bottom: 1rem;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 0.5rem;
-    }
-    .tab {
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 6px;
-      background: transparent;
-      color: var(--text-muted);
-      font-family: inherit;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s;
-    }
-    .tab:hover { background: var(--surface2); color: var(--text); }
-    .tab.active { background: var(--accent); color: var(--white); }
-    .panel { display: none; }
-    .panel.active { display: block; }
+    .panel { display: block; margin-bottom: 0.5rem; }
     .panel h3 { font-size: 1.1rem; margin: 0 0 1rem 0; color: var(--text-muted); }
     .new-shoes-section { margin-bottom: 2rem; }
+    #panel-new-shoes .collapsible-section .new-shoes-section { padding-left: 1.5rem; padding-right: 1.5rem; }
     .new-shoes-section-title { font-size: 1rem; margin: 0 0 0.75rem 0; color: var(--text); }
     .new-shoes-product-family { margin-bottom: 1.25rem; }
     .new-shoes-product-family-header { display: flex; justify-content: space-between; align-items: center; margin: 0 0 0.5rem 0; }
@@ -200,7 +179,7 @@
       overflow: hidden;
     }
     .collapsible-section summary {
-      padding: 0.75rem 1rem;
+      padding: 0.75rem 1.5rem;
       background: var(--surface);
       font-weight: 600;
       font-size: 1rem;
@@ -217,6 +196,7 @@
       transition: transform 0.2s;
     }
     .collapsible-section[open] summary::before { transform: rotate(90deg); }
+    #panel-new-shoes .collapsible-section summary .new-shoes-summary-title { margin-right: auto; }
     .collapsible-section .header-form {
       margin-bottom: 0;
       border-radius: 0;
@@ -226,7 +206,6 @@
     html { overflow-y: scroll; }
     @media (max-width: 768px) {
       .form-grid { grid-template-columns: 1fr; }
-      .tabs { gap: 0.5rem; }
     }
   </style>
 </head>
@@ -240,8 +219,8 @@
         </div>
       </div>
       <!-- Order Info -->
-      <details class="collapsible-section" open>
-        <summary>Order Info</summary>
+      <details class="collapsible-section">
+        <summary>ORDER INFO</summary>
         <div class="header-form">
           <div class="form-grid">
             <div class="form-group">
@@ -265,8 +244,8 @@
       </details>
 
       <!-- Account Info -->
-      <details class="collapsible-section" open>
-        <summary>Account Info</summary>
+      <details class="collapsible-section">
+        <summary>ACCOUNT INFO</summary>
         <div class="header-form">
           <div class="form-grid">
             <div class="form-group">
@@ -304,20 +283,12 @@
         </div>
       </details>
 
-      <div class="tabs" role="tablist">
-        <button type="button" class="tab active" data-tab="new-shoes" role="tab">NEW SHOES</button>
-        <button type="button" class="tab" data-tab="existing" role="tab">SEASONAL</button>
-        <button type="button" class="tab" data-tab="care" role="tab">CARE PRODUCTS & MISC</button>
-        <button type="button" class="tab" data-tab="belts" role="tab">BELTS</button>
-        <button type="button" class="tab" data-tab="gloves" role="tab">GLOVES & SCUFFS</button>
-        <button type="button" class="tab" data-tab="slippers" role="tab">QUADREX & SLIPPERS</button>
-      </div>
     </div>
 
-    <!-- NEW SHOES -->
-    <section id="panel-new-shoes" class="panel active" role="tabpanel">
-      <h3>NEW SHOES — FALL 2026 PROGRAM</h3>
-
+    <!-- NEW FOOTWEAR -->
+    <section id="panel-new-shoes" class="panel" role="tabpanel">
+      <details class="collapsible-section">
+        <summary><span class="new-shoes-summary-title">NEW FOOTWEAR</span><span class="new-shoes-family-total"><span id="new-shoes-pairs">0</span> pr | <span id="new-shoes-total">$0</span></span></summary>
       <!-- Red Wing -->
       <div class="new-shoes-section">
         <h4 class="new-shoes-section-title">Red Wing</h4>
@@ -540,15 +511,14 @@
         </div>
       </div>
 
-      <div class="new-shoes-grand-total">
-        <strong>NEW SHOES TOTAL</strong> <span id="new-shoes-pairs" class="num-col">0</span> pairs &nbsp;|&nbsp; <span id="new-shoes-total" class="num-col">$0</span>
-      </div>
+      </details>
     </section>
 
-    <!-- EXISTING -->
+    <!-- SEASONAL FOOTWEAR -->
     <section id="panel-existing" class="panel" role="tabpanel">
-      <h3>SEASONAL — FALL ORDERS (Aug 1 – Dec 15)</h3>
-      <div class="table-wrap">
+      <details class="collapsible-section">
+        <summary>SEASONAL FOOTWEAR</summary>
+        <div class="table-wrap">
         <table>
           <thead>
             <tr>
@@ -571,12 +541,14 @@
           </tfoot>
         </table>
       </div>
+      </details>
     </section>
 
     <!-- CARE PRODUCTS & MISC -->
     <section id="panel-care" class="panel" role="tabpanel">
-      <h3>CARE PRODUCTS & MISC</h3>
-      <div class="table-wrap">
+      <details class="collapsible-section">
+        <summary>CARE PRODUCTS & MISC</summary>
+        <div class="table-wrap">
         <table>
           <thead>
             <tr>
@@ -600,12 +572,14 @@
           </tfoot>
         </table>
       </div>
+      </details>
     </section>
 
     <!-- BELTS -->
     <section id="panel-belts" class="panel" role="tabpanel">
-      <h3>BELTS</h3>
-      <div class="table-wrap">
+      <details class="collapsible-section">
+        <summary>BELTS</summary>
+        <div class="table-wrap">
         <table>
           <thead>
             <tr>
@@ -629,12 +603,14 @@
           </tfoot>
         </table>
       </div>
+      </details>
     </section>
 
     <!-- GLOVES & SCUFFS -->
     <section id="panel-gloves" class="panel" role="tabpanel">
-      <h3>GLOVES & SCUFFS</h3>
-      <div class="table-wrap">
+      <details class="collapsible-section">
+        <summary>GLOVES & SCUFFS</summary>
+        <div class="table-wrap">
         <table>
           <thead>
             <tr>
@@ -658,12 +634,14 @@
           </tfoot>
         </table>
       </div>
+      </details>
     </section>
 
-    <!-- QUADREX & SLIPPERS -->
+    <!-- SLIPPERS -->
     <section id="panel-slippers" class="panel" role="tabpanel">
-      <h3>QUADREX & SLIPPERS — SEASONAL (Aug 1 – Dec 15)</h3>
-      <div class="table-wrap">
+      <details class="collapsible-section">
+        <summary>SLIPPERS</summary>
+        <div class="table-wrap">
         <table>
           <thead>
             <tr>
@@ -688,6 +666,7 @@
           </tfoot>
         </table>
       </div>
+      </details>
     </section>
   </div>
 
