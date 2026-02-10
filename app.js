@@ -74,16 +74,6 @@
           { brand: '', productFamily: '', shipDate: '', style: '3059', width: 'E2', sizesEnd: 14 },
           { brand: '', productFamily: '', shipDate: '', style: '3054', width: 'B', sizesEnd: 16 },
           { brand: '', productFamily: '', shipDate: '', style: '3054', width: 'D', sizesEnd: 16 }
-        ]},
-        { tbodyId: 'tbody-new-shoes-redwing-tecnetic', rows: [
-          { brand: 'Red Wing', productFamily: 'Tecnetic', shipDate: '08/15/26', style: '3010', width: 'D', sizesEnd: 16 },
-          { brand: '', productFamily: '', shipDate: '', style: '3010', width: 'E2', sizesEnd: 14 },
-          { brand: '', productFamily: '', shipDate: '', style: '3011', width: 'D', sizesEnd: 16 },
-          { brand: '', productFamily: '', shipDate: '', style: '3011', width: 'E2', sizesEnd: 14 },
-          { brand: '', productFamily: '', shipDate: '', style: '3012', width: 'D', sizesEnd: 16 },
-          { brand: '', productFamily: '', shipDate: '', style: '3012', width: 'E2', sizesEnd: 14 },
-          { brand: '', productFamily: '', shipDate: '', style: '3013', width: 'B', sizesEnd: 16 },
-          { brand: '', productFamily: '', shipDate: '', style: '3013', width: 'D', sizesEnd: 16 }
         ]}
       ]
     },
@@ -107,11 +97,6 @@
       pairsId: 'new-shoes-irishsetter-pairs',
       totalId: 'new-shoes-irishsetter-total',
       productFamilies: [
-        { tbodyId: 'tbody-new-shoes-irishsetter-setterfifty', rows: [
-          { brand: 'Irish Setter', productFamily: 'Setter Fifty', shipDate: '', style: '', width: 'D', sizesEnd: 16 },
-          { brand: '', productFamily: '', shipDate: '', style: '', width: 'E2', sizesEnd: 14 },
-          { brand: '', productFamily: '', shipDate: '', style: '', width: 'E3', sizesEnd: 14 }
-        ]},
         { tbodyId: 'tbody-new-shoes-irishsetter-traillock', rows: [
           { brand: 'Irish Setter', productFamily: 'Trail Lock', shipDate: '07/15/26', style: '3953', width: 'D', sizesEnd: 16 },
           { brand: '', productFamily: '', shipDate: '', style: '3953', width: 'E2', sizesEnd: 14 },
