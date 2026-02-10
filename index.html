@@ -85,6 +85,9 @@
     .new-shoes-section { margin-bottom: 2rem; }
     #panel-new-shoes .collapsible-section .new-shoes-section { padding-left: 1.5rem; padding-right: 1.5rem; }
     .new-shoes-section-title { font-size: 1rem; margin: 0 0 0.75rem 0; color: var(--text); }
+    .seasonal-section { margin-bottom: 2rem; }
+    #panel-existing .collapsible-section .seasonal-section { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .seasonal-section-title { font-size: 1rem; margin: 0 0 0.75rem 0; color: var(--text); }
     .new-shoes-product-family { margin-bottom: 1.25rem; }
     .new-shoes-product-family-header { display: flex; justify-content: space-between; align-items: center; margin: 0 0 0.5rem 0; }
     .new-shoes-product-family-title { font-size: 0.95rem; margin: 0; color: var(--text-muted); font-weight: 600; }
@@ -103,6 +106,8 @@
     .table-new-shoes .new-shoes-package-select { font-size: 0.85rem; padding: 0.25rem 0.4rem; min-width: 2.5rem; }
     .new-shoes-brand-total { margin-top: 0.75rem; padding: 0.6rem 0.85rem; background: var(--surface2); border-radius: 6px; font-size: 0.95rem; }
     .new-shoes-brand-total .num-col { color: var(--accent); }
+    .seasonal-total { margin-top: 0.75rem; padding: 0.6rem 0.85rem; background: var(--surface2); border-radius: 6px; font-size: 0.95rem; }
+    .seasonal-total .num-col { color: var(--accent); }
     .new-shoes-section-meta { font-size: 0.8rem; color: var(--text-muted); margin: 0 0 0.75rem 0; }
     .new-shoes-grand-total { margin-top: 1rem; padding: 0.75rem 1rem; background: var(--surface2); border-radius: 8px; font-size: 1rem; }
     .new-shoes-grand-total .num-col { color: var(--accent); }
@@ -197,6 +202,7 @@
     }
     .collapsible-section[open] summary::before { transform: rotate(90deg); }
     #panel-new-shoes .collapsible-section summary .new-shoes-summary-title { margin-right: auto; }
+    #panel-existing .collapsible-section summary .seasonal-summary-title { margin-right: auto; }
     .collapsible-section .header-form {
       margin-bottom: 0;
       border-radius: 0;
@@ -517,30 +523,64 @@
     <!-- SEASONAL FOOTWEAR -->
     <section id="panel-existing" class="panel" role="tabpanel">
       <details class="collapsible-section">
-        <summary>SEASONAL FOOTWEAR</summary>
-        <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>REQT DATE</th>
-              <th>Style</th>
-              <th>Width</th>
-              <th>1</th><th>2</th><th>3</th><th>4</th><th>4.5</th><th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-existing"></tbody>
-          <tfoot>
-            <tr class="total-row">
-              <td colspan="19">SEASONAL TOTAL PAIR</td>
-              <td id="existing-total-pair" class="num-col">0</td>
-            </tr>
-            <tr class="total-row">
-              <td colspan="19">SEASONAL TOTAL PRICE</td>
-              <td id="existing-total-price" class="num-col">0</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
+        <summary><span class="seasonal-summary-title">SEASONAL FOOTWEAR</span><span class="new-shoes-family-total"><span id="existing-total-pair-header">0</span> pr | <span id="existing-total-price-header">$0</span></span></summary>
+
+        <div class="seasonal-section">
+          <h4 class="seasonal-section-title">Red Wing</h4>
+          <div class="table-wrap">
+            <table class="table-seasonal">
+              <thead>
+                <tr>
+                  <th>REQT DATE</th>
+                  <th>Style</th>
+                  <th>Width</th>
+                  <th>4</th><th>4.5</th><th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-existing-redwing" class="tbody-existing"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="seasonal-section">
+          <h4 class="seasonal-section-title">Irish Setter Hunt</h4>
+          <div class="table-wrap">
+            <table class="table-seasonal">
+              <thead>
+                <tr>
+                  <th>REQT DATE</th>
+                  <th>Style</th>
+                  <th>Width</th>
+                  <th>4</th><th>4.5</th><th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-existing-irish-hunt" class="tbody-existing"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="seasonal-section">
+          <h4 class="seasonal-section-title">Irish Setter Lifestyle</h4>
+          <div class="table-wrap">
+            <table class="table-seasonal">
+              <thead>
+                <tr>
+                  <th>REQT DATE</th>
+                  <th>Style</th>
+                  <th>Width</th>
+                  <th>1</th><th>2</th><th>3</th><th>4</th><th>4.5</th><th>5</th><th>5.5</th><th>6</th><th>6.5</th><th>7</th><th>7.5</th><th>8</th><th>8.5</th><th>9</th><th>9.5</th><th>10</th><th>10.5</th><th>11</th><th>11.5</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-existing-irish-lifestyle" class="tbody-existing"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="seasonal-total">
+          <strong>SEASONAL FOOTWEAR TOTAL</strong>
+          <span id="existing-total-pair" class="num-col">0</span> pairs &nbsp;|&nbsp;
+          <span id="existing-total-price" class="num-col">0</span>
+        </div>
       </details>
     </section>
 

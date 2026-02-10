@@ -303,38 +303,98 @@
     if (elTotal) elTotal.textContent = formatCurrency(totalDollars);
   }
 
-  // ─── EXISTING: manual entry rows ────────────────────────────────────────
+  // ─── EXISTING (SEASONAL FOOTWEAR): manual entry rows by brand ───────────
   function renderExisting() {
-    var tbody = document.getElementById('tbody-existing');
-    tbody.innerHTML = '';
-    for (var r = 0; r < 15; r++) {
-      var tr = document.createElement('tr');
-      tr.innerHTML = '<td><input type="text" placeholder="MMDDYY" class="existing-reqdate"></td><td><input type="text" class="existing-style"></td><td><input type="text" class="existing-width"></td>';
-      for (var s = 1; s <= 16; s++) {
-        tr.innerHTML += '<td><input type="number" min="0" value="0" class="existing-size"></td>';
+    // Fixed style lists per brand, not editable. Each style has two widths:
+    // Red Wing / Hunt use D and E2; Lifestyle uses M and W.
+    // For each style we render one required date cell and style cell that
+    // span both width rows (rowspan=2), like New Footwear.
+    var brandConfigs = [
+      {
+        tbodyId: 'tbody-existing-redwing',
+        styles: [
+          '3263', '3264', '3265', '3266', '3548', '3936'
+        ],
+        widths: ['D', 'E2']
+      },
+      {
+        tbodyId: 'tbody-existing-irish-hunt',
+        styles: [
+          '2746', 'A0860', 'A2714', 'A3897'
+        ],
+        widths: ['D', 'E2']
+      },
+      {
+        tbodyId: 'tbody-existing-irish-lifestyle',
+        styles: [
+          '7000', '7172', '7930', '7970', '7971', '7976', '7977',
+          'G7156', 'G7244', 'G7553', 'G7752'
+        ],
+        widths: ['M', 'W']
       }
-      tbody.appendChild(tr);
-    }
-    tbody.querySelectorAll('input').forEach(function (inp) {
+    ];
+
+    brandConfigs.forEach(function (cfg) {
+      var tbody = document.getElementById(cfg.tbodyId);
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      cfg.styles.forEach(function (style) {
+        var rowSpan = cfg.widths.length;
+
+        cfg.widths.forEach(function (width, idx) {
+          var tr = document.createElement('tr');
+          var html = '';
+
+          if (idx === 0) {
+            // One required date and style cell spanning both width rows
+            html += '<td rowspan="' + rowSpan + '"><input type="text" placeholder=\"MMDDYY\" class=\"existing-reqdate\"></td>';
+            html += '<td rowspan="' + rowSpan + '" class="existing-style-label">' + style + '</td>';
+          }
+
+          html += '<td class="existing-width-label">' + width + '</td>';
+
+          // Sizes for Seasonal Footwear mirror New Footwear: 4–16 (with half sizes)
+          for (var i = 0; i < newShoesSizes.length; i++) {
+            html += '<td><input type=\"number\" min=\"0\" class=\"existing-size\"></td>';
+          }
+
+          tr.innerHTML = html;
+          tbody.appendChild(tr);
+        });
+      });
+    });
+
+    // Hook up total updates for all size inputs
+    document.querySelectorAll('.tbody-existing input').forEach(function (inp) {
       inp.addEventListener('input', updateExistingTotals);
     });
   }
 
   function updateExistingTotals() {
-    var tbody = document.getElementById('tbody-existing');
     var totalPair = 0, totalPrice = 0;
     var defaultPrice = 120;
-    tbody.querySelectorAll('tr').forEach(function (tr) {
-      var sizeInputs = tr.querySelectorAll('.existing-size');
-      var rowSum = 0;
-      sizeInputs.forEach(function (i) { rowSum += parseInt(i.value, 10) || 0; });
-      totalPair += rowSum;
-      totalPrice += rowSum * defaultPrice;
+    var tbodies = document.querySelectorAll('.tbody-existing');
+
+    tbodies.forEach(function (tbody) {
+      tbody.querySelectorAll('tr').forEach(function (tr) {
+        var sizeInputs = tr.querySelectorAll('.existing-size');
+        var rowSum = 0;
+        sizeInputs.forEach(function (i) { rowSum += parseInt(i.value, 10) || 0; });
+        totalPair += rowSum;
+        totalPrice += rowSum * defaultPrice;
+      });
     });
     var elP = document.getElementById('existing-total-pair');
     var elPr = document.getElementById('existing-total-price');
     if (elP) elP.textContent = totalPair;
-    if (elPr) elPr.textContent = totalPrice;
+    if (elPr) elPr.textContent = formatCurrency(totalPrice);
+
+    // Mirror totals into Seasonal header
+    var elPH = document.getElementById('existing-total-pair-header');
+    var elPrH = document.getElementById('existing-total-price-header');
+    if (elPH) elPH.textContent = totalPair;
+    if (elPrH) elPrH.textContent = formatCurrency(totalPrice);
   }
 
   // ─── CARE PRODUCTS ──────────────────────────────────────────────────────
@@ -369,7 +429,7 @@
         '<td>' + p.desc + '</td>' +
         '<td class="num-col care-price">' + p.price + '</td>' +
         '<td>' + p.uom + '</td>' +
-        '<td><input type="number" min="0" value="0" class="care-qty"></td>' +
+        '<td><input type="number" min="0" class="care-qty"></td>' +
         '<td class="num-col care-row-total">0</td>';
       tbody.appendChild(tr);
       tr.querySelector('.care-qty').addEventListener('input', function () {
@@ -408,7 +468,7 @@
       var tr = document.createElement('tr');
       tr.innerHTML = '<td>' + p.shipDate + '</td><td>' + p.stock + '</td><td>' + p.desc + '</td>';
       beltSizes.forEach(function () {
-        tr.innerHTML += '<td><input type="number" min="0" value="0" class="belt-size"></td>';
+        tr.innerHTML += '<td><input type="number" min="0" class="belt-size"></td>';
       });
       tr.innerHTML += '<td class="num-col belt-row-qty">0</td><td class="num-col">' + p.price + '</td><td class="num-col belt-row-total">0</td>';
       tbody.appendChild(tr);
@@ -450,7 +510,7 @@
       var tr = document.createElement('tr');
       tr.innerHTML = '<td>' + p.shipDate + '</td><td>' + p.stock + '</td><td>' + p.desc + '</td>';
       gloveSizes.forEach(function () {
-        tr.innerHTML += '<td><input type="number" min="0" value="0" class="glove-size"></td>';
+        tr.innerHTML += '<td><input type="number" min="0" class="glove-size"></td>';
       });
       tr.innerHTML += '<td class="num-col glove-row-qty">0</td><td class="num-col">' + p.price + '</td><td class="num-col glove-row-total">0</td>';
       tbody.appendChild(tr);
@@ -497,7 +557,7 @@
       var tr = document.createElement('tr');
       tr.innerHTML = '<td>' + (p.shipDate || '') + '</td><td>' + p.stock + '</td><td>' + p.desc + '</td><td>' + p.width + '</td>';
       slipperSizes.forEach(function () {
-        tr.innerHTML += '<td><input type="number" min="0" value="0" class="slipper-size"></td>';
+        tr.innerHTML += '<td><input type="number" min="0" class="slipper-size"></td>';
       });
       tr.innerHTML += '<td class="num-col">' + p.price + '</td><td class="num-col slipper-row-qty">0</td><td class="num-col slipper-row-total">0</td>';
       tbody.appendChild(tr);
