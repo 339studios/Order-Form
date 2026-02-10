@@ -281,47 +281,6 @@
     updateGrandTotals();
   }
 
-  // ─── EUROPEAN: manual rows ───────────────────────────────────────────────
-  var euroSizes = ['34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50'];
-  function renderEuropean() {
-    var tbody = document.getElementById('tbody-european');
-    tbody.innerHTML = '';
-    for (var r = 0; r < 20; r++) {
-      var tr = document.createElement('tr');
-      tr.innerHTML = '<td><input type="text" placeholder="RQT DATE"></td><td><input type="text" placeholder="Style"></td>';
-      euroSizes.forEach(function () {
-        tr.innerHTML += '<td><input type="number" min="0" value="0" class="euro-size"></td>';
-      });
-      tr.innerHTML += '<td class="num-col euro-row-total">0</td>';
-      tbody.appendChild(tr);
-      tr.querySelectorAll('.euro-size').forEach(function (inp) {
-        inp.addEventListener('input', function () { updateEuropeanRow(tr); });
-      });
-    }
-  }
-
-  function updateEuropeanRow(tr) {
-    var inputs = tr.querySelectorAll('.euro-size');
-    var sum = 0;
-    inputs.forEach(function (i) { sum += parseInt(i.value, 10) || 0; });
-    var totalCell = tr.querySelector('.euro-row-total');
-    if (totalCell) totalCell.textContent = sum;
-    updateEuropeanTotals();
-  }
-
-  function updateEuropeanTotals() {
-    var tbody = document.getElementById('tbody-european');
-    var totalPair = 0;
-    tbody.querySelectorAll('.euro-row-total').forEach(function (c) {
-      totalPair += parseInt(c.textContent, 10) || 0;
-    });
-    var elP = document.getElementById('european-total-pair');
-    var elPr = document.getElementById('european-total-price');
-    if (elP) elP.textContent = totalPair;
-    if (elPr) elPr.textContent = totalPair * 140;
-    updateGrandTotals();
-  }
-
   // ─── CARE PRODUCTS ──────────────────────────────────────────────────────
   var careProducts = [
     { cat: 'Headwear', shipDate: '081526', stock: '98059', desc: 'Logo Knit Beanie - Black', price: 60, uom: '6/pack' },
@@ -633,49 +592,6 @@
     updateGrandTotals();
   }
 
-  // ─── QR BELTS ─────────────────────────────────────────────────────────────
-  var qrBeltProducts = [
-    { shipDate: '', stock: '27', desc: 'Quick Release (SML/MED, LRG/XLG, 2XL/3XL)', price: 27 }
-  ];
-  function renderQrBelts() {
-    var tbody = document.getElementById('tbody-qr-belts');
-    tbody.innerHTML = '';
-    qrBeltProducts.forEach(function (p) {
-      var tr = document.createElement('tr');
-      tr.innerHTML = '<td><input type="text"></td><td>' + p.stock + '</td><td>' + p.desc + '</td>' +
-        '<td><input type="number" min="0" value="0" class="qr-sml"></td>' +
-        '<td><input type="number" min="0" value="0" class="qr-lrg"></td>' +
-        '<td><input type="number" min="0" value="0" class="qr-2xl"></td>' +
-        '<td class="num-col">' + p.price + '</td><td class="num-col qr-row-qty">0</td><td class="num-col qr-row-total">0</td>';
-      tbody.appendChild(tr);
-      tr.querySelectorAll('.qr-sml, .qr-lrg, .qr-2xl').forEach(function (inp) {
-        inp.addEventListener('input', function () {
-          var s = parseInt(tr.querySelector('.qr-sml').value, 10) || 0;
-          var l = parseInt(tr.querySelector('.qr-lrg').value, 10) || 0;
-          var x = parseInt(tr.querySelector('.qr-2xl').value, 10) || 0;
-          var sum = s + l + x;
-          tr.querySelector('.qr-row-qty').textContent = sum;
-          tr.querySelector('.qr-row-total').textContent = sum * p.price;
-          updateQrBeltsTotals();
-        });
-      });
-    });
-  }
-
-  function updateQrBeltsTotals() {
-    var tbody = document.getElementById('tbody-qr-belts');
-    var totalQty = 0, totalPrice = 0;
-    tbody.querySelectorAll('tr').forEach(function (tr) {
-      var q = tr.querySelector('.qr-row-qty');
-      var t = tr.querySelector('.qr-row-total');
-      if (q) totalQty += parseInt(q.textContent, 10) || 0;
-      if (t) totalPrice += parseInt(t.textContent, 10) || 0;
-    });
-    setText('qr-belts-total-qty', totalQty);
-    setText('qr-belts-total-price', totalPrice);
-    updateGrandTotals();
-  }
-
   function setText(id, val) {
     var el = document.getElementById(id);
     if (el) el.textContent = val;
@@ -685,7 +601,6 @@
   function updateGrandTotals() {
     var newShoes = parseInt(document.getElementById('new-shoes-total')?.textContent || '0', 10);
     var existing = parseInt(document.getElementById('existing-total-price')?.textContent || '0', 10);
-    var european = parseInt(document.getElementById('european-total-price')?.textContent || '0', 10);
     var care = parseFloat(document.getElementById('care-total-price')?.textContent || '0');
     var socks = parseFloat(document.getElementById('socks-total-price')?.textContent || '0');
     var footbeds = parseFloat(document.getElementById('footbeds-total-price')?.textContent || '0');
@@ -693,10 +608,9 @@
     var gloves = parseFloat(document.getElementById('gloves-total-price')?.textContent || '0');
     var slippers = parseFloat(document.getElementById('slippers-total-price')?.textContent || '0');
     var glasses = parseFloat(document.getElementById('glasses-total-price')?.textContent || '0');
-    var qrBelts = parseFloat(document.getElementById('qr-belts-total-price')?.textContent || '0');
 
-    var grandFootwear = newShoes + existing + european;
-    var totalAccess = care + socks + footbeds + belts + gloves + slippers + glasses + qrBelts;
+    var grandFootwear = newShoes + existing;
+    var totalAccess = care + socks + footbeds + belts + gloves + slippers + glasses;
     var orderGrand = grandFootwear + totalAccess;
 
     setText('grand-total-footwear', grandFootwear.toLocaleString());
@@ -706,7 +620,6 @@
   // ─── Init ───────────────────────────────────────────────────────────────
   renderNewShoes();
   renderExisting();
-  renderEuropean();
   renderCare();
   renderSocks();
   renderFootbeds();
@@ -714,6 +627,5 @@
   renderGloves();
   renderSlippers();
   renderGlasses();
-  renderQrBelts();
   updateGrandTotals();
 })();
