@@ -163,11 +163,11 @@
         var firstInGroup = idx === 0 && styleKey;
         var html = '';
         if (firstInGroup) {
-          html += '<td class="new-shoes-style-img" rowspan="' + styleRows.length + '"><img src="' + getImagesBase() + 'Images/' + styleKey + '.png" alt="' + styleKey + '"></td>';
+          html += '<td class="new-shoes-style-img" rowspan="' + styleRows.length + '"><span class="new-shoes-style-num">' + styleKey + '</span><img src="' + getImagesBase() + 'Images/' + styleKey + '.png" alt="' + styleKey + '"><span class="new-shoes-style-price">$' + defaultPricePerPair + '</span></td>';
         } else if (!styleKey) {
           html += '<td></td>';
         }
-        html += '<td>' + (row.style || '') + '</td>' + '<td>' + (row.width || '') + '</td>';
+        html += '<td class="new-shoes-width">' + (row.width || '') + '</td>';
         var sizesEnd = row.sizesEnd != null ? row.sizesEnd : 16;
         newShoesSizes.forEach(function (s) {
           var sizeNum = parseFloat(s, 10);
@@ -175,7 +175,7 @@
           var cls = disabled ? ' size-disabled' : '';
           html += '<td><input type="number" min="0" step="1" data-size="' + s + '" value="0"' + (disabled ? ' disabled' : '') + ' class="new-shoes-size' + cls + '"></td>';
         });
-        html += '<td class="num-col new-shoes-total-pairs">0</td><td class="num-col">' + defaultPricePerPair + '</td><td class="num-col new-shoes-row-total">0</td>';
+        html += '<td class="num-col new-shoes-total-pairs">0</td><td class="num-col new-shoes-row-total">0</td>';
         tr.innerHTML = html;
         tbody.appendChild(tr);
         tr.querySelectorAll('input:not([disabled])').forEach(function (input) {
