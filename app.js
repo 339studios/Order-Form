@@ -159,6 +159,62 @@
     updateNewShoesRow();
   }
 
+  // ─── ORDER SUMMARY (cross-category) ──────────────────────────────────────
+  function updateOrderSummaryTotals() {
+    function getCurrencyById(id) {
+      var el = document.getElementById(id);
+      if (!el) return 0;
+      return parseCurrencyText(el.textContent);
+    }
+
+    function getIntById(id) {
+      var el = document.getElementById(id);
+      if (!el) return 0;
+      return parseInt(el.textContent, 10) || 0;
+    }
+
+    var newTotal = getCurrencyById('new-shoes-total');
+    var seasonalTotal = getCurrencyById('existing-total-price');
+    var careTotal = getCurrencyById('care-total-price');
+    var beltsTotal = getCurrencyById('belts-total-price');
+    var glovesTotal = getCurrencyById('gloves-total-price');
+    var slippersTotal = getCurrencyById('slippers-total-price');
+
+    var grandTotal = newTotal + seasonalTotal + careTotal + beltsTotal + glovesTotal + slippersTotal;
+
+    // Pairs: footwear only (New + Seasonal; slippers are accessories)
+    var newPairs = getIntById('new-shoes-pairs');
+    var seasonalPairs = getIntById('existing-total-pair');
+    var totalPairs = newPairs + seasonalPairs;
+
+    // Units: footwear pairs + accessory units
+    var newUnits = getIntById('new-shoes-pairs');
+    var seasonalUnits = getIntById('existing-total-pair');
+    var careUnits = getIntById('care-total-qty');
+    var beltsUnits = getIntById('belts-total-qty');
+    var glovesUnits = getIntById('gloves-total-qty');
+    var slippersUnits = getIntById('slippers-total-qty');
+    var grandUnits = newUnits + seasonalUnits + careUnits + beltsUnits + glovesUnits + slippersUnits;
+
+    setText('order-summary-new-pairs', newPairs);
+    setText('order-summary-seasonal-pairs', seasonalPairs);
+    setText('order-summary-new-units', newUnits);
+    setText('order-summary-seasonal-units', seasonalUnits);
+    setText('order-summary-care-units', careUnits);
+    setText('order-summary-belts-units', beltsUnits);
+    setText('order-summary-gloves-units', glovesUnits);
+    setText('order-summary-slippers-units', slippersUnits);
+    setText('order-summary-new', formatCurrency(newTotal));
+    setText('order-summary-seasonal', formatCurrency(seasonalTotal));
+    setText('order-summary-care', formatCurrency(careTotal));
+    setText('order-summary-belts', formatCurrency(beltsTotal));
+    setText('order-summary-gloves', formatCurrency(glovesTotal));
+    setText('order-summary-slippers', formatCurrency(slippersTotal));
+    setText('order-summary-total-pairs', totalPairs);
+    setText('order-summary-total-units', grandUnits);
+    setText('order-summary-total', formatCurrency(grandTotal));
+  }
+
   function getImagesBase() {
     var base = (location.pathname || '').replace(/\/?index\.html$/i, '');
     if (base && !/\/$/.test(base)) base = base + '/';
@@ -301,6 +357,8 @@
     var elTotal = document.getElementById('new-shoes-total');
     if (elPairs) elPairs.textContent = totalPairs;
     if (elTotal) elTotal.textContent = formatCurrency(totalDollars);
+
+    updateOrderSummaryTotals();
   }
 
   // ─── EXISTING (SEASONAL FOOTWEAR): manual entry rows by brand ───────────
@@ -395,6 +453,8 @@
     var elPrH = document.getElementById('existing-total-price-header');
     if (elPH) elPH.textContent = totalPair;
     if (elPrH) elPrH.textContent = formatCurrency(totalPrice);
+
+    updateOrderSummaryTotals();
   }
 
   // ─── CARE PRODUCTS ──────────────────────────────────────────────────────
@@ -453,6 +513,8 @@
     var elP = document.getElementById('care-total-price');
     if (elQ) elQ.textContent = totalQty;
     if (elP) elP.textContent = totalPrice;
+
+    updateOrderSummaryTotals();
   }
 
   // ─── BELTS ───────────────────────────────────────────────────────────────
@@ -495,6 +557,8 @@
     });
     setText('belts-total-qty', totalQty);
     setText('belts-total-price', totalPrice);
+
+    updateOrderSummaryTotals();
   }
 
   // ─── GLOVES ──────────────────────────────────────────────────────────────
@@ -537,6 +601,8 @@
     });
     setText('gloves-total-qty', totalQty);
     setText('gloves-total-price', totalPrice);
+
+    updateOrderSummaryTotals();
   }
 
   // ─── SLIPPERS ────────────────────────────────────────────────────────────
@@ -584,9 +650,11 @@
     });
     setText('slippers-total-qty', totalQty);
     setText('slippers-total-price', totalPrice.toFixed(2));
+
+    updateOrderSummaryTotals();
   }
 
-    function setText(id, val) {
+  function setText(id, val) {
     var el = document.getElementById(id);
     if (el) el.textContent = val;
   }
