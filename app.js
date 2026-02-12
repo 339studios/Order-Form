@@ -816,6 +816,60 @@
     if (el) el.textContent = val;
   }
 
+  var headerStatusInvalidSvg = '<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="11" cy="11" r="10" stroke="currentColor" stroke-width="2"/><path d="M7 7l8 8M15 7l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+  var headerStatusValidSvg = '<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="11" cy="11" r="10" stroke="currentColor" stroke-width="2"/><path d="M6 11l3 3 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  function updateOrderInfoStatus() {
+    var el = document.getElementById('order-info-status');
+    if (!el) return;
+    var date = (document.getElementById('date') && document.getElementById('date').value) ? document.getElementById('date').value.trim() : '';
+    var salesRep = (document.getElementById('salesRep') && document.getElementById('salesRep').value) ? document.getElementById('salesRep').value.trim() : '';
+    var valid = date.length > 0 && salesRep.length > 0;
+    el.className = 'header-section-status ' + (valid ? 'valid' : 'invalid');
+    el.innerHTML = valid ? headerStatusValidSvg : headerStatusInvalidSvg;
+    el.setAttribute('aria-label', valid ? 'All required fields complete' : 'Missing required fields');
+    el.setAttribute('title', valid ? 'All required fields complete' : 'Missing required fields');
+  }
+
+  function updateAccountInfoStatus() {
+    var el = document.getElementById('account-info-status');
+    if (!el) return;
+    var account = (document.getElementById('account') && document.getElementById('account').value) ? document.getElementById('account').value.trim() : '';
+    var storeName = (document.getElementById('storeName') && document.getElementById('storeName').value) ? document.getElementById('storeName').value.trim() : '';
+    var address = (document.getElementById('address') && document.getElementById('address').value) ? document.getElementById('address').value.trim() : '';
+    var valid = account.length > 0 && storeName.length > 0 && address.length > 0;
+    el.className = 'header-section-status ' + (valid ? 'valid' : 'invalid');
+    el.innerHTML = valid ? headerStatusValidSvg : headerStatusInvalidSvg;
+    el.setAttribute('aria-label', valid ? 'All required fields complete' : 'Missing required fields');
+    el.setAttribute('title', valid ? 'All required fields complete' : 'Missing required fields');
+  }
+
+  function bindHeaderSectionValidation() {
+    var dateEl = document.getElementById('date');
+    if (dateEl && dateEl.type === 'date' && !dateEl.value) {
+      var today = new Date();
+      dateEl.value = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+    }
+    var orderIds = ['date', 'salesRep'];
+    var accountIds = ['account', 'storeName', 'address'];
+    orderIds.forEach(function (id) {
+      var input = document.getElementById(id);
+      if (input) {
+        input.addEventListener('input', updateOrderInfoStatus);
+        input.addEventListener('change', updateOrderInfoStatus);
+      }
+    });
+    accountIds.forEach(function (id) {
+      var input = document.getElementById(id);
+      if (input) {
+        input.addEventListener('input', updateAccountInfoStatus);
+        input.addEventListener('change', updateAccountInfoStatus);
+      }
+    });
+    updateOrderInfoStatus();
+    updateAccountInfoStatus();
+  }
+
   // ─── Init ───────────────────────────────────────────────────────────────
   renderNewShoes();
   renderExisting();
@@ -823,4 +877,5 @@
   renderLeatherGoods();
   renderBelts();
   renderSlippers();
+  bindHeaderSectionValidation();
   })();
