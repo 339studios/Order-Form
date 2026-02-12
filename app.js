@@ -198,8 +198,6 @@
 
     setText('order-summary-new-pairs', newPairs);
     setText('order-summary-seasonal-pairs', seasonalPairs);
-    setText('order-summary-new-units', newUnits);
-    setText('order-summary-seasonal-units', seasonalUnits);
     setText('order-summary-care-units', careUnits);
     setText('order-summary-leather-units', leatherUnits);
     setText('order-summary-belts-units', beltsUnits);
@@ -210,6 +208,12 @@
     setText('order-summary-leather', formatCurrency(leatherTotal));
     setText('order-summary-belts', formatCurrency(beltsTotal));
     setText('order-summary-slippers', formatCurrency(slippersTotal));
+    setText('order-summary-footwear-pairs', totalPairs);
+    setText('order-summary-footwear-total', formatCurrency(newTotal + seasonalTotal));
+    var accessoriesUnits = careUnits + leatherUnits + beltsUnits + slippersUnits;
+    var accessoriesTotal = careTotal + leatherTotal + beltsTotal + slippersTotal;
+    setText('order-summary-accessories-units', accessoriesUnits);
+    setText('order-summary-accessories-total', formatCurrency(accessoriesTotal));
     setText('order-summary-total-pairs', totalPairs);
     setText('order-summary-total-units', grandUnits);
     setText('order-summary-total', formatCurrency(grandTotal));
@@ -401,13 +405,20 @@
       }
     ];
 
+    var defaultSeasonalPrice = 120;
     brandConfigs.forEach(function (cfg) {
       var tbody = document.getElementById(cfg.tbodyId);
       if (!tbody) return;
       tbody.innerHTML = '';
 
+      var fallbackImg = (cfg.tbodyId.indexOf('redwing') !== -1)
+        ? getImagesBase() + 'Images/redwing-trademark.png'
+        : getImagesBase() + 'Images/irishsetter-trademark.png';
+
       cfg.styles.forEach(function (style) {
         var rowSpan = cfg.widths.length;
+        var imgSrc = getImagesBase() + 'Images/' + style + '.png';
+        var price = defaultSeasonalPrice;
 
         cfg.widths.forEach(function (width, idx) {
           var tr = document.createElement('tr');
@@ -415,8 +426,12 @@
 
           if (idx === 0) {
             // One required date and style cell spanning both width rows
-            html += '<td rowspan="' + rowSpan + '"><input type="text" placeholder=\"MMDDYY\" class=\"existing-reqdate\"></td>';
-            html += '<td rowspan="' + rowSpan + '" class="existing-style-label">' + style + '</td>';
+            html += '<td rowspan="' + rowSpan + '"><input type="date" class="existing-shipdate" min="2026-08-15" max="2026-12-15" value="2026-08-15"></td>';
+            html += '<td rowspan="' + rowSpan + '" class="new-shoes-style-img">' +
+              '<span class="new-shoes-style-num">' + style + '</span>' +
+              '<img src="' + imgSrc + '" alt="' + style + '" onerror="this.onerror=null;this.src=\'' + fallbackImg + '\';this.classList.add(\'img-fallback\');">' +
+              '<span class="new-shoes-style-price">$' + price + '</span>' +
+              '</td>';
           }
 
           html += '<td class="existing-width-label">' + width + '</td>';
@@ -529,10 +544,11 @@
       g.items.forEach(function (p) {
         var tr = document.createElement('tr');
         var imgSrc = getImagesBase() + 'Images/' + p.stock + '.png';
+        var fallbackImg = getImagesBase() + 'Images/redwing-trademark.png';
         tr.innerHTML =
           '<td class="new-shoes-style-img">' +
             '<span class="new-shoes-style-num">' + p.stock + '</span>' +
-            '<img src="' + imgSrc + '" alt="' + p.stock + '">' +
+            '<img src="' + imgSrc + '" alt="' + p.stock + '" onerror="this.onerror=null;this.src=\'' + fallbackImg + '\';this.classList.add(\'img-fallback\');">' +
             '<span class="new-shoes-style-price">$' + p.price + '</span>' +
           '</td>' +
           '<td>' + p.desc + '</td>' +
@@ -632,10 +648,11 @@
       g.items.forEach(function (p) {
         var tr = document.createElement('tr');
         var imgSrc = getImagesBase() + 'Images/' + p.stock + '.png';
+        var fallbackImg = getImagesBase() + 'Images/redwing-trademark.png';
         tr.innerHTML =
           '<td class="new-shoes-style-img">' +
             '<span class="new-shoes-style-num">' + p.stock + '</span>' +
-            '<img src="' + imgSrc + '" alt="' + p.stock + '">' +
+            '<img src="' + imgSrc + '" alt="' + p.stock + '" onerror="this.onerror=null;this.src=\'' + fallbackImg + '\';this.classList.add(\'img-fallback\');">' +
             '<span class="new-shoes-style-price">$' + p.price + '</span>' +
           '</td>' +
           '<td>' + p.desc + '</td>' +
@@ -688,11 +705,19 @@
     tbody.innerHTML = '';
     products.forEach(function (p) {
       var tr = document.createElement('tr');
-      tr.innerHTML = '<td>' + p.stock + '</td><td>' + p.desc + '</td>';
+      var imgSrc = getImagesBase() + 'Images/' + p.stock + '.png';
+      var fallbackImg = getImagesBase() + 'Images/redwing-trademark.png';
+      tr.innerHTML =
+        '<td class="new-shoes-style-img">' +
+          '<span class="new-shoes-style-num">' + p.stock + '</span>' +
+          '<img src="' + imgSrc + '" alt="' + p.stock + '" onerror="this.onerror=null;this.src=\'' + fallbackImg + '\';this.classList.add(\'img-fallback\');">' +
+          '<span class="new-shoes-style-price">$' + p.price + '</span>' +
+        '</td>' +
+        '<td>' + p.desc + '</td>';
       beltSizes.forEach(function () {
         tr.innerHTML += '<td><input type="number" min="0" class="belt-size"></td>';
       });
-      tr.innerHTML += '<td class="num-col belt-row-qty">0</td><td class="num-col">' + p.price + '</td><td class="num-col belt-row-total">0</td>';
+      tr.innerHTML += '<td class="num-col belt-row-qty">0</td><td class="num-col belt-row-total">0</td>';
       tbody.appendChild(tr);
       tr.querySelectorAll('.belt-size').forEach(function (inp) {
         inp.addEventListener('input', function () {
@@ -742,11 +767,20 @@
     tbody.innerHTML = '';
     slipperProducts.forEach(function (p) {
       var tr = document.createElement('tr');
-      tr.innerHTML = '<td>' + (p.shipDate || '') + '</td><td>' + p.stock + '</td><td>' + p.desc + '</td><td>' + p.width + '</td>';
+      var imgSrc = getImagesBase() + 'Images/' + p.stock + '.png';
+      var fallbackImg = getImagesBase() + 'Images/redwing-trademark.png';
+      tr.innerHTML =
+        '<td><input type="date" class="slipper-shipdate" min="2026-08-01" max="2026-12-15" value="2026-08-01"></td>' +
+        '<td class="new-shoes-style-img">' +
+          '<span class="new-shoes-style-num">' + p.stock + '</span>' +
+          '<img src="' + imgSrc + '" alt="' + p.stock + '" onerror="this.onerror=null;this.src=\'' + fallbackImg + '\';this.classList.add(\'img-fallback\');">' +
+          '<span class="new-shoes-style-price">$' + Number(p.price).toFixed(2) + '</span>' +
+        '</td>' +
+        '<td>' + p.desc + '</td><td>' + p.width + '</td>';
       slipperSizes.forEach(function () {
         tr.innerHTML += '<td><input type="number" min="0" class="slipper-size"></td>';
       });
-      tr.innerHTML += '<td class="num-col">' + p.price + '</td><td class="num-col slipper-row-qty">0</td><td class="num-col slipper-row-total">0</td>';
+      tr.innerHTML += '<td class="num-col slipper-row-qty">0</td><td class="num-col slipper-row-total">0</td>';
       tbody.appendChild(tr);
       tr.querySelectorAll('.slipper-size').forEach(function (inp) {
         inp.addEventListener('input', function () {
