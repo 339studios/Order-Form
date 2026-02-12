@@ -215,6 +215,15 @@
     setText('order-summary-total', formatCurrency(grandTotal));
   }
 
+  function formatShipDate(d) {
+    if (!d) return '';
+    var s = String(d);
+    if (s.length === 6) {
+      return s.slice(0, 2) + '/' + s.slice(2, 4) + '/' + s.slice(4);
+    }
+    return s;
+  }
+
   function getImagesBase() {
     var base = (location.pathname || '').replace(/\/?index\.html$/i, '');
     if (base && !/\/$/.test(base)) base = base + '/';
@@ -478,36 +487,80 @@
   ];
 
   function renderCare() {
-    var tbody = document.getElementById('tbody-care');
-    tbody.innerHTML = '';
+    var container = document.getElementById('care-groups');
+    if (!container) return;
+    container.innerHTML = '';
+
+    var groups = [];
+    var current = null;
     careProducts.forEach(function (p) {
-      var tr = document.createElement('tr');
-      tr.innerHTML =
-        '<td>' + (p.cat || '') + '</td>' +
-        '<td>' + p.shipDate + '</td>' +
-        '<td>' + p.stock + '</td>' +
-        '<td>' + p.desc + '</td>' +
-        '<td class="num-col care-price">' + p.price + '</td>' +
-        '<td>' + p.uom + '</td>' +
-        '<td><input type="number" min="0" class="care-qty"></td>' +
-        '<td class="num-col care-row-total">0</td>';
-      tbody.appendChild(tr);
-      tr.querySelector('.care-qty').addEventListener('input', function () {
-        var qty = parseInt(this.value, 10) || 0;
-        tr.querySelector('.care-row-total').textContent = qty * p.price;
-        updateCareTotals();
+      if (p.cat) {
+        current = { name: p.cat, shipDate: p.shipDate, items: [] };
+        groups.push(current);
+      }
+      if (!current) {
+        current = { name: '', shipDate: p.shipDate, items: [] };
+        groups.push(current);
+      }
+      current.items.push(p);
+    });
+
+    groups.forEach(function (g) {
+      var wrap = document.createElement('div');
+      wrap.className = 'care-category';
+      var headerHtml =
+        '<div class="new-shoes-product-family-header">' +
+          '<h5 class="new-shoes-product-family-title">' +
+            (g.name || '') +
+            (g.shipDate ? ' \u2014 Ship: ' + formatShipDate(g.shipDate) : '') +
+          '</h5>' +
+        '</div>' +
+        '<div class="table-wrap">' +
+          '<table>' +
+            '<thead>' +
+              '<tr>' +
+                '<th>Stock #</th>' +
+                '<th>Description</th>' +
+                '<th>Price</th>' +
+                '<th>Unit of Measure</th>' +
+                '<th>Quantity</th>' +
+                '<th>Total</th>' +
+              '</tr>' +
+            '</thead>' +
+            '<tbody></tbody>' +
+          '</table>' +
+        '</div>';
+      wrap.innerHTML = headerHtml;
+      container.appendChild(wrap);
+
+      var tbody = wrap.querySelector('tbody');
+
+      g.items.forEach(function (p) {
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td>' + p.stock + '</td>' +
+          '<td>' + p.desc + '</td>' +
+          '<td class="num-col care-price">' + p.price + '</td>' +
+          '<td>' + p.uom + '</td>' +
+          '<td><input type="number" min="0" class="care-qty"></td>' +
+          '<td class="num-col care-row-total">0</td>';
+        tbody.appendChild(tr);
+        tr.querySelector('.care-qty').addEventListener('input', function () {
+          var qty = parseInt(this.value, 10) || 0;
+          tr.querySelector('.care-row-total').textContent = qty * p.price;
+          updateCareTotals();
+        });
       });
     });
   }
 
   function updateCareTotals() {
-    var tbody = document.getElementById('tbody-care');
     var totalQty = 0, totalPrice = 0;
-    tbody.querySelectorAll('tr').forEach(function (tr) {
-      var q = tr.querySelector('.care-qty');
-      var t = tr.querySelector('.care-row-total');
-      if (q) totalQty += parseInt(q.value, 10) || 0;
-      if (t) totalPrice += parseInt(t.textContent, 10) || 0;
+    document.querySelectorAll('.care-qty').forEach(function (q) {
+      totalQty += parseInt(q.value, 10) || 0;
+    });
+    document.querySelectorAll('.care-row-total').forEach(function (t) {
+      totalPrice += parseInt(t.textContent, 10) || 0;
     });
     var elQ = document.getElementById('care-total-qty');
     var elP = document.getElementById('care-total-price');

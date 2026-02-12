@@ -88,6 +88,25 @@
     .seasonal-section { margin-bottom: 2rem; }
     #panel-existing .collapsible-section .seasonal-section { padding-left: 1.5rem; padding-right: 1.5rem; }
     .seasonal-section-title { font-size: 1rem; margin: 0 0 0.75rem 0; color: var(--text); }
+    .care-section { margin-bottom: 2rem; }
+    #panel-care .collapsible-section .care-section { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .care-category { margin-bottom: 1.5rem; }
+    .care-category-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 0 0.5rem 0;
+    }
+    .care-category-title {
+      font-size: 0.95rem;
+      margin: 0;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .care-category-meta {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
     .new-shoes-product-family { margin-bottom: 1.25rem; }
     .new-shoes-product-family-header { display: flex; justify-content: space-between; align-items: center; margin: 0 0 0.5rem 0; }
     .new-shoes-product-family-title { font-size: 0.95rem; margin: 0; color: var(--text-muted); font-weight: 600; }
@@ -108,6 +127,10 @@
     .new-shoes-brand-total .num-col { color: var(--accent); }
     .seasonal-total { margin-top: 0.75rem; padding: 0.6rem 0.85rem; background: var(--surface2); border-radius: 6px; font-size: 0.95rem; }
     .seasonal-total .num-col { color: var(--accent); }
+    .care-category-row td { font-weight: 600; background: var(--surface2); padding: 0.4rem 0.6rem; }
+    .care-category-header { display: flex; justify-content: space-between; align-items: center; }
+    .care-category-title { font-size: 0.95rem; }
+    .care-category-meta { font-size: 0.85rem; color: var(--text-muted); }
     .new-shoes-section-meta { font-size: 0.8rem; color: var(--text-muted); margin: 0 0 0.75rem 0; }
     .new-shoes-grand-total { margin-top: 1rem; padding: 0.75rem 1rem; background: var(--surface2); border-radius: 8px; font-size: 1rem; }
     .new-shoes-grand-total .num-col { color: var(--accent); }
@@ -588,30 +611,14 @@
     <section id="panel-care" class="panel" role="tabpanel">
       <details class="collapsible-section">
         <summary>CARE PRODUCTS & MISC</summary>
-        <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Category</th>
-              <th>Ship Date</th>
-              <th>Stock #</th>
-              <th>Description</th>
-              <th>Price</th>
-              <th>Unit of Measure</th>
-              <th>Quantity</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-care"></tbody>
-          <tfoot>
-            <tr class="total-row">
-              <td colspan="6">Total Care Products</td>
-              <td id="care-total-qty" class="num-col">0</td>
-              <td id="care-total-price" class="num-col">0</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
+        <div class="care-section">
+          <div id="care-groups"></div>
+          <div class="care-total">
+            <strong>Total Care Products</strong>
+            <span id="care-total-qty" class="num-col">0</span> units &nbsp;|&nbsp;
+            <span id="care-total-price" class="num-col">0</span>
+          </div>
+        </div>
       </details>
     </section>
 
