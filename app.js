@@ -177,10 +177,10 @@
     var seasonalTotal = getCurrencyById('existing-total-price');
     var careTotal = getCurrencyById('care-total-price');
     var beltsTotal = getCurrencyById('belts-total-price');
-    var glovesTotal = getCurrencyById('gloves-total-price');
     var slippersTotal = getCurrencyById('slippers-total-price');
 
-    var grandTotal = newTotal + seasonalTotal + careTotal + beltsTotal + glovesTotal + slippersTotal;
+    var leatherTotal = getCurrencyById('leather-total-price');
+    var grandTotal = newTotal + seasonalTotal + careTotal + leatherTotal + beltsTotal + slippersTotal;
 
     // Pairs: footwear only (New + Seasonal; slippers are accessories)
     var newPairs = getIntById('new-shoes-pairs');
@@ -191,24 +191,24 @@
     var newUnits = getIntById('new-shoes-pairs');
     var seasonalUnits = getIntById('existing-total-pair');
     var careUnits = getIntById('care-total-qty');
+    var leatherUnits = getIntById('leather-total-qty');
     var beltsUnits = getIntById('belts-total-qty');
-    var glovesUnits = getIntById('gloves-total-qty');
     var slippersUnits = getIntById('slippers-total-qty');
-    var grandUnits = newUnits + seasonalUnits + careUnits + beltsUnits + glovesUnits + slippersUnits;
+    var grandUnits = newUnits + seasonalUnits + careUnits + leatherUnits + beltsUnits + slippersUnits;
 
     setText('order-summary-new-pairs', newPairs);
     setText('order-summary-seasonal-pairs', seasonalPairs);
     setText('order-summary-new-units', newUnits);
     setText('order-summary-seasonal-units', seasonalUnits);
     setText('order-summary-care-units', careUnits);
+    setText('order-summary-leather-units', leatherUnits);
     setText('order-summary-belts-units', beltsUnits);
-    setText('order-summary-gloves-units', glovesUnits);
     setText('order-summary-slippers-units', slippersUnits);
     setText('order-summary-new', formatCurrency(newTotal));
     setText('order-summary-seasonal', formatCurrency(seasonalTotal));
     setText('order-summary-care', formatCurrency(careTotal));
+    setText('order-summary-leather', formatCurrency(leatherTotal));
     setText('order-summary-belts', formatCurrency(beltsTotal));
-    setText('order-summary-gloves', formatCurrency(glovesTotal));
     setText('order-summary-slippers', formatCurrency(slippersTotal));
     setText('order-summary-total-pairs', totalPairs);
     setText('order-summary-total-units', grandUnits);
@@ -333,7 +333,7 @@
           if (t) dollars += parseCurrencyText(t.textContent);
         });
         var el = document.querySelector('.new-shoes-family-total[data-tbody-id="' + pf.tbodyId + '"]');
-        if (el) el.textContent = pairs + ' pr | ' + formatCurrency(dollars);
+        if (el) el.textContent = pairs + ' pairs | ' + formatCurrency(dollars);
       });
     });
   }
@@ -466,7 +466,7 @@
     updateOrderSummaryTotals();
   }
 
-  // ─── CARE PRODUCTS ──────────────────────────────────────────────────────
+  // ─── HEADWEAR ───────────────────────────────────────────────────────────
   var careProducts = [
     { cat: 'Headwear', shipDate: '081526', stock: '98059', desc: 'Logo Knit Beanie - Black', price: 60, uom: '6/pack' },
     { cat: '', shipDate: '081526', stock: '98060', desc: 'Logo Knit Beanie - Coyote Brown', price: 60, uom: '6/pack' },
@@ -475,15 +475,7 @@
     { cat: '', shipDate: '081526', stock: '98063', desc: 'Logo Knit Beanie - Dark Denim', price: 60, uom: '6/pack' },
     { cat: '', shipDate: '081526', stock: '98064', desc: 'Logo Knit Beanie - Olive', price: 60, uom: '6/pack' },
     { cat: 'New Laces', shipDate: '081526', stock: '93023', desc: '54" Heavy Duty Kevlar - Black', price: 108, uom: '12 Pair (hang card)' },
-    { cat: '', shipDate: '081526', stock: '93024', desc: '63" Heavy Duty Kevlar - Black', price: 108, uom: '12 Pair (hang card)' },
-    { cat: 'Wallet / Cardholder', shipDate: '081526', stock: '96582', desc: 'Bifold Wallet - Black', price: 150, uom: '3/pack' },
-    { cat: '', shipDate: '081526', stock: '96583', desc: 'Bifold Wallet - Oro', price: 150, uom: '3/pack' },
-    { cat: '', shipDate: '081526', stock: '96587', desc: 'Card Holder - Black', price: 90, uom: '3/pack' },
-    { cat: '', shipDate: '081526', stock: '96588', desc: 'Card Holder - Oro', price: 90, uom: '3/pack' },
-    { cat: '', shipDate: '091526', stock: '95085', desc: 'Wallet & Keychain Gift Box - Black', price: 390, uom: '6/pack' },
-    { cat: '', shipDate: '091526', stock: '95086', desc: 'Wallet & Keychain Gift Box - Oro', price: 390, uom: '6/pack' },
-    { cat: 'Keychain', shipDate: '081526', stock: '95076', desc: 'Leather Keychain - Black', price: 60, uom: '3/pack' },
-    { cat: '', shipDate: '081526', stock: '95077', desc: 'Leather Keychain - Oro', price: 60, uom: '3/pack' }
+    { cat: '', shipDate: '081526', stock: '93024', desc: '63" Heavy Duty Kevlar - Black', price: 108, uom: '12 Pair (hang card)' }
   ];
 
   function renderCare() {
@@ -516,12 +508,11 @@
           '</h5>' +
         '</div>' +
         '<div class="table-wrap">' +
-          '<table>' +
+          '<table class="table-care">' +
             '<thead>' +
               '<tr>' +
                 '<th>Stock #</th>' +
                 '<th>Description</th>' +
-                '<th>Price</th>' +
                 '<th>Unit of Measure</th>' +
                 '<th>Quantity</th>' +
                 '<th>Total</th>' +
@@ -537,10 +528,14 @@
 
       g.items.forEach(function (p) {
         var tr = document.createElement('tr');
+        var imgSrc = getImagesBase() + 'Images/' + p.stock + '.png';
         tr.innerHTML =
-          '<td>' + p.stock + '</td>' +
+          '<td class="new-shoes-style-img">' +
+            '<span class="new-shoes-style-num">' + p.stock + '</span>' +
+            '<img src="' + imgSrc + '" alt="' + p.stock + '">' +
+            '<span class="new-shoes-style-price">$' + p.price + '</span>' +
+          '</td>' +
           '<td>' + p.desc + '</td>' +
-          '<td class="num-col care-price">' + p.price + '</td>' +
           '<td>' + p.uom + '</td>' +
           '<td><input type="number" min="0" class="care-qty"></td>' +
           '<td class="num-col care-row-total">0</td>';
@@ -566,22 +561,134 @@
     var elP = document.getElementById('care-total-price');
     if (elQ) elQ.textContent = totalQty;
     if (elP) elP.textContent = totalPrice;
+    var elQH = document.getElementById('care-total-qty-header');
+    var elPH = document.getElementById('care-total-price-header');
+    if (elQH) elQH.textContent = totalQty;
+    if (elPH) elPH.textContent = formatCurrency(totalPrice);
+
+    updateOrderSummaryTotals();
+  }
+
+  // ─── LEATHER GOODS ───────────────────────────────────────────────────────
+  var leatherGoodsProducts = [
+    { cat: 'Wallet / Cardholder', shipDate: '081526', stock: '96582', desc: 'Bifold Wallet - Black', price: 150, uom: '3/pack' },
+    { cat: '', shipDate: '081526', stock: '96583', desc: 'Bifold Wallet - Oro', price: 150, uom: '3/pack' },
+    { cat: '', shipDate: '081526', stock: '96587', desc: 'Card Holder - Black', price: 90, uom: '3/pack' },
+    { cat: '', shipDate: '081526', stock: '96588', desc: 'Card Holder - Oro', price: 90, uom: '3/pack' },
+    { cat: 'Keychain', shipDate: '081526', stock: '95076', desc: 'Leather Keychain - Black', price: 60, uom: '3/pack' },
+    { cat: '', shipDate: '081526', stock: '95077', desc: 'Leather Keychain - Oro', price: 60, uom: '3/pack' },
+    { cat: 'Gift Set', shipDate: '091526', stock: '95085', desc: 'Wallet & Keychain Gift Box - Black', price: 390, uom: '6/pack' },
+    { cat: '', shipDate: '091526', stock: '95086', desc: 'Wallet & Keychain Gift Box - Oro', price: 390, uom: '6/pack' }
+  ];
+
+  function renderLeatherGoods() {
+    var container = document.getElementById('leather-groups');
+    if (!container) return;
+    container.innerHTML = '';
+
+    var groups = [];
+    var current = null;
+    leatherGoodsProducts.forEach(function (p) {
+      if (p.cat) {
+        current = { name: p.cat, shipDate: p.shipDate, items: [] };
+        groups.push(current);
+      }
+      if (!current) {
+        current = { name: '', shipDate: p.shipDate, items: [] };
+        groups.push(current);
+      }
+      current.items.push(p);
+    });
+
+    groups.forEach(function (g) {
+      var wrap = document.createElement('div');
+      wrap.className = 'care-category';
+      var headerHtml =
+        '<div class="new-shoes-product-family-header">' +
+          '<h5 class="new-shoes-product-family-title">' +
+            (g.name || '') +
+            (g.shipDate ? ' \u2014 Ship: ' + formatShipDate(g.shipDate) : '') +
+          '</h5>' +
+        '</div>' +
+        '<div class="table-wrap">' +
+          '<table class="table-care">' +
+            '<thead>' +
+              '<tr>' +
+                '<th>Stock #</th>' +
+                '<th>Description</th>' +
+                '<th>Unit of Measure</th>' +
+                '<th>Quantity</th>' +
+                '<th>Total</th>' +
+              '</tr>' +
+            '</thead>' +
+            '<tbody></tbody>' +
+          '</table>' +
+        '</div>';
+      wrap.innerHTML = headerHtml;
+      container.appendChild(wrap);
+
+      var tbody = wrap.querySelector('tbody');
+
+      g.items.forEach(function (p) {
+        var tr = document.createElement('tr');
+        var imgSrc = getImagesBase() + 'Images/' + p.stock + '.png';
+        tr.innerHTML =
+          '<td class="new-shoes-style-img">' +
+            '<span class="new-shoes-style-num">' + p.stock + '</span>' +
+            '<img src="' + imgSrc + '" alt="' + p.stock + '">' +
+            '<span class="new-shoes-style-price">$' + p.price + '</span>' +
+          '</td>' +
+          '<td>' + p.desc + '</td>' +
+          '<td>' + p.uom + '</td>' +
+          '<td><input type="number" min="0" class="leather-qty"></td>' +
+          '<td class="num-col leather-row-total">0</td>';
+        tbody.appendChild(tr);
+        tr.querySelector('.leather-qty').addEventListener('input', function () {
+          var qty = parseInt(this.value, 10) || 0;
+          tr.querySelector('.leather-row-total').textContent = qty * p.price;
+          updateLeatherGoodsTotals();
+        });
+      });
+    });
+  }
+
+  function updateLeatherGoodsTotals() {
+    var totalQty = 0, totalPrice = 0;
+    document.querySelectorAll('.leather-qty').forEach(function (q) {
+      totalQty += parseInt(q.value, 10) || 0;
+    });
+    document.querySelectorAll('.leather-row-total').forEach(function (t) {
+      totalPrice += parseInt(t.textContent, 10) || 0;
+    });
+    var elQ = document.getElementById('leather-total-qty');
+    var elP = document.getElementById('leather-total-price');
+    if (elQ) elQ.textContent = totalQty;
+    if (elP) elP.textContent = totalPrice;
+    var elQH = document.getElementById('leather-total-qty-header');
+    var elPH = document.getElementById('leather-total-price-header');
+    if (elQH) elQH.textContent = totalQty;
+    if (elPH) elPH.textContent = formatCurrency(totalPrice);
 
     updateOrderSummaryTotals();
   }
 
   // ─── BELTS ───────────────────────────────────────────────────────────────
   var beltSizes = ['W26','W28','W30','W32','W34','W36','W38','W40','W42','W44','W46','W48','W50','W52','W54'];
-  var beltProducts = [
-    { shipDate: '081526', stock: '96594', desc: 'Leather-Lined Nylon Work Belt', price: 40 },
-    { shipDate: '081526', stock: '96595', desc: 'Heavy Duty Leather Comfort Belt', price: 40 }
+  var leatherBeltProducts = [
+    { stock: '96594', desc: 'Leather-Lined Nylon Work Belt', price: 40 },
+    { stock: '96595', desc: 'Heavy Duty Leather Comfort Belt', price: 40 }
   ];
-  function renderBelts() {
-    var tbody = document.getElementById('tbody-belts');
+  var qrNylonBeltProducts = [
+    { stock: '96538', desc: 'Quick Release Nylon Web Belt - Black', price: 27 },
+    { stock: '96593', desc: 'Quick Release Nylon Web Belt - Copper', price: 27 }
+  ];
+  function renderBeltTable(tbodyId, products) {
+    var tbody = document.getElementById(tbodyId);
+    if (!tbody) return;
     tbody.innerHTML = '';
-    beltProducts.forEach(function (p) {
+    products.forEach(function (p) {
       var tr = document.createElement('tr');
-      tr.innerHTML = '<td>' + p.shipDate + '</td><td>' + p.stock + '</td><td>' + p.desc + '</td>';
+      tr.innerHTML = '<td>' + p.stock + '</td><td>' + p.desc + '</td>';
       beltSizes.forEach(function () {
         tr.innerHTML += '<td><input type="number" min="0" class="belt-size"></td>';
       });
@@ -598,62 +705,23 @@
       });
     });
   }
+  function renderBelts() {
+    renderBeltTable('tbody-belts', leatherBeltProducts);
+    renderBeltTable('tbody-belts-qr', qrNylonBeltProducts);
+  }
 
   function updateBeltsTotals() {
-    var tbody = document.getElementById('tbody-belts');
     var totalQty = 0, totalPrice = 0;
-    tbody.querySelectorAll('tr').forEach(function (tr) {
-      var q = tr.querySelector('.belt-row-qty');
-      var t = tr.querySelector('.belt-row-total');
-      if (q) totalQty += parseInt(q.textContent, 10) || 0;
-      if (t) totalPrice += parseInt(t.textContent, 10) || 0;
+    document.querySelectorAll('.belt-row-qty').forEach(function (q) {
+      totalQty += parseInt(q.textContent, 10) || 0;
+    });
+    document.querySelectorAll('.belt-row-total').forEach(function (t) {
+      totalPrice += parseInt(t.textContent, 10) || 0;
     });
     setText('belts-total-qty', totalQty);
     setText('belts-total-price', totalPrice);
-
-    updateOrderSummaryTotals();
-  }
-
-  // ─── GLOVES ──────────────────────────────────────────────────────────────
-  var gloveSizes = ['XSM','SML','MED','LRG','XLG','XXL'];
-  var gloveProducts = [
-    { shipDate: '081525', stock: '96538', desc: 'Quick Release Nylon Web Belt - Black', price: 27 },
-    { shipDate: '081525', stock: '96593', desc: 'Quick Release Nylon Web Belt - Copper', price: 27 }
-  ];
-  function renderGloves() {
-    var tbody = document.getElementById('tbody-gloves');
-    tbody.innerHTML = '';
-    gloveProducts.forEach(function (p) {
-      var tr = document.createElement('tr');
-      tr.innerHTML = '<td>' + p.shipDate + '</td><td>' + p.stock + '</td><td>' + p.desc + '</td>';
-      gloveSizes.forEach(function () {
-        tr.innerHTML += '<td><input type="number" min="0" class="glove-size"></td>';
-      });
-      tr.innerHTML += '<td class="num-col glove-row-qty">0</td><td class="num-col">' + p.price + '</td><td class="num-col glove-row-total">0</td>';
-      tbody.appendChild(tr);
-      tr.querySelectorAll('.glove-size').forEach(function (inp) {
-        inp.addEventListener('input', function () {
-          var sum = 0;
-          tr.querySelectorAll('.glove-size').forEach(function (i) { sum += parseInt(i.value, 10) || 0; });
-          tr.querySelector('.glove-row-qty').textContent = sum;
-          tr.querySelector('.glove-row-total').textContent = sum * p.price;
-          updateGlovesTotals();
-        });
-      });
-    });
-  }
-
-  function updateGlovesTotals() {
-    var tbody = document.getElementById('tbody-gloves');
-    var totalQty = 0, totalPrice = 0;
-    tbody.querySelectorAll('tr').forEach(function (tr) {
-      var q = tr.querySelector('.glove-row-qty');
-      var t = tr.querySelector('.glove-row-total');
-      if (q) totalQty += parseInt(q.textContent, 10) || 0;
-      if (t) totalPrice += parseInt(t.textContent, 10) || 0;
-    });
-    setText('gloves-total-qty', totalQty);
-    setText('gloves-total-price', totalPrice);
+    setText('belts-total-qty-header', totalQty);
+    setText('belts-total-price-header', formatCurrency(totalPrice));
 
     updateOrderSummaryTotals();
   }
@@ -703,6 +771,8 @@
     });
     setText('slippers-total-qty', totalQty);
     setText('slippers-total-price', totalPrice.toFixed(2));
+    setText('slippers-total-pairs-header', totalQty);
+    setText('slippers-total-price-header', formatCurrency(totalPrice));
 
     updateOrderSummaryTotals();
   }
@@ -716,7 +786,7 @@
   renderNewShoes();
   renderExisting();
   renderCare();
+  renderLeatherGoods();
   renderBelts();
-  renderGloves();
   renderSlippers();
   })();

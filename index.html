@@ -80,6 +80,7 @@
       border-color: var(--accent);
       box-shadow: 0 0 0 2px rgba(255, 0, 51, 0.25);
     }
+    .sr-only { display: none; }
     .panel { display: block; margin-bottom: 0.5rem; }
     .panel h3 { font-size: 1.1rem; margin: 0 0 1rem 0; color: var(--text-muted); }
     .new-shoes-section { margin-bottom: 2rem; }
@@ -87,9 +88,11 @@
     .new-shoes-section-title { font-size: 1rem; margin: 0 0 0.75rem 0; color: var(--text); }
     .seasonal-section { margin-bottom: 2rem; }
     #panel-existing .collapsible-section .seasonal-section { padding-left: 1.5rem; padding-right: 1.5rem; }
-    .seasonal-section-title { font-size: 1rem; margin: 0 0 0.75rem 0; color: var(--text); }
     .care-section { margin-bottom: 2rem; }
-    #panel-care .collapsible-section .care-section { padding-left: 1.5rem; padding-right: 1.5rem; }
+    #panel-care .collapsible-section .care-section,
+    #panel-leather .collapsible-section .care-section,
+    #panel-belts .collapsible-section .belts-section { padding-left: 1.5rem; padding-right: 1.5rem; }
+    #panel-slippers .collapsible-section .slippers-section { padding-left: 1.5rem; padding-right: 1.5rem; }
     .care-category { margin-bottom: 1.5rem; }
     .care-category-header {
       display: flex;
@@ -125,8 +128,10 @@
     .table-new-shoes .new-shoes-package-select { font-size: 0.85rem; padding: 0.25rem 0.4rem; min-width: 2.5rem; }
     .new-shoes-brand-total { margin-top: 0.75rem; padding: 0.6rem 0.85rem; background: var(--surface2); border-radius: 6px; font-size: 0.95rem; }
     .new-shoes-brand-total .num-col { color: var(--accent); }
-    .seasonal-total { margin-top: 0.75rem; padding: 0.6rem 0.85rem; background: var(--surface2); border-radius: 6px; font-size: 0.95rem; }
-    .seasonal-total .num-col { color: var(--accent); }
+    .table-care th:nth-child(2) { text-align: left; }
+    .table-care td:nth-child(3),
+    .table-care td:nth-child(4),
+    .table-care td:nth-child(5) { text-align: center; }
     .care-category-row td { font-weight: 600; background: var(--surface2); padding: 0.4rem 0.6rem; }
     .care-category-header { display: flex; justify-content: space-between; align-items: center; }
     .care-category-title { font-size: 0.95rem; }
@@ -217,6 +222,7 @@
       align-items: center;
       gap: 0.5rem;
     }
+    .collapsible-section summary + * { margin-top: 1rem; }
     .collapsible-section summary::-webkit-details-marker { display: none; }
     .collapsible-section summary::before {
       content: '▸';
@@ -226,6 +232,10 @@
     .collapsible-section[open] summary::before { transform: rotate(90deg); }
     #panel-new-shoes .collapsible-section summary .new-shoes-summary-title { margin-right: auto; }
     #panel-existing .collapsible-section summary .seasonal-summary-title { margin-right: auto; }
+    #panel-care .collapsible-section summary .care-summary-title,
+    #panel-leather .collapsible-section summary .care-summary-title,
+    #panel-belts .collapsible-section summary .care-summary-title,
+    #panel-slippers .collapsible-section summary .care-summary-title { margin-right: auto; }
     .collapsible-section .header-form {
       margin-bottom: 0;
       border-radius: 0;
@@ -317,14 +327,14 @@
     <!-- NEW FOOTWEAR -->
     <section id="panel-new-shoes" class="panel" role="tabpanel">
       <details class="collapsible-section">
-        <summary><span class="new-shoes-summary-title">NEW FOOTWEAR</span><span class="new-shoes-family-total"><span id="new-shoes-pairs">0</span> pr | <span id="new-shoes-total">$0</span></span></summary>
+        <summary><span class="new-shoes-summary-title">NEW FOOTWEAR</span><span class="new-shoes-family-total"><span id="new-shoes-pairs">0</span> pairs | <span id="new-shoes-total">$0</span></span></summary>
       <!-- Red Wing -->
       <div class="new-shoes-section">
         <h4 class="new-shoes-section-title">Red Wing</h4>
         <div class="new-shoes-product-family">
           <div class="new-shoes-product-family-header">
             <h5 class="new-shoes-product-family-title">SuperSole X — Ship: 10/15/26</h5>
-            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-redwing-supersole">0 pr | $0</span>
+            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-redwing-supersole">0 pairs | $0</span>
           </div>
           <div class="table-wrap">
             <table class="table-new-shoes">
@@ -342,7 +352,7 @@
         <div class="new-shoes-product-family">
           <div class="new-shoes-product-family-header">
             <h5 class="new-shoes-product-family-title">ExosLite — Ship: 08/15/26</h5>
-            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-redwing-exoslite">0 pr | $0</span>
+            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-redwing-exoslite">0 pairs | $0</span>
           </div>
           <div class="table-wrap">
             <table class="table-new-shoes">
@@ -360,7 +370,7 @@
         <div class="new-shoes-product-family">
           <div class="new-shoes-product-family-header">
             <h5 class="new-shoes-product-family-title">IronFlex — Ship: 08/15/26</h5>
-            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-redwing-ironflex">0 pr | $0</span>
+            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-redwing-ironflex">0 pairs | $0</span>
           </div>
           <div class="table-wrap">
             <table class="table-new-shoes">
@@ -378,7 +388,7 @@
         <div class="new-shoes-product-family">
           <div class="new-shoes-product-family-header">
             <h5 class="new-shoes-product-family-title">Construct — Ship: 09/15/26</h5>
-            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-redwing-construct">0 pr | $0</span>
+            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-redwing-construct">0 pairs | $0</span>
           </div>
           <div class="table-wrap">
             <table class="table-new-shoes">
@@ -396,7 +406,7 @@
         <div class="new-shoes-product-family">
           <div class="new-shoes-product-family-header">
             <h5 class="new-shoes-product-family-title">VersaPro — Ship: 08/15/26</h5>
-            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-redwing-versapro">0 pr | $0</span>
+            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-redwing-versapro">0 pairs | $0</span>
           </div>
           <div class="table-wrap">
             <table class="table-new-shoes">
@@ -422,7 +432,7 @@
         <div class="new-shoes-product-family">
           <div class="new-shoes-product-family-header">
             <h5 class="new-shoes-product-family-title">Essentials Edge — Ship: 08/15/26</h5>
-            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-worx-essentialedge">0 pr | $0</span>
+            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-worx-essentialedge">0 pairs | $0</span>
           </div>
           <div class="table-wrap">
             <table class="table-new-shoes">
@@ -440,7 +450,7 @@
         <div class="new-shoes-product-family">
           <div class="new-shoes-product-family-header">
             <h5 class="new-shoes-product-family-title">Cinder — Ship: 08/15/26</h5>
-            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-worx-cinder">0 pr | $0</span>
+            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-worx-cinder">0 pairs | $0</span>
           </div>
           <div class="table-wrap">
             <table class="table-new-shoes">
@@ -466,7 +476,7 @@
         <div class="new-shoes-product-family">
           <div class="new-shoes-product-family-header">
             <h5 class="new-shoes-product-family-title">Trail Lock — Ship: 07/15/26</h5>
-            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-irishsetter-traillock">0 pr | $0</span>
+            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-irishsetter-traillock">0 pairs | $0</span>
           </div>
           <div class="table-wrap">
             <table class="table-new-shoes">
@@ -484,7 +494,7 @@
         <div class="new-shoes-product-family">
           <div class="new-shoes-product-family-header">
             <h5 class="new-shoes-product-family-title">Trailblazer — Ship: 07/15/26</h5>
-            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-irishsetter-trailblazer">0 pr | $0</span>
+            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-irishsetter-trailblazer">0 pairs | $0</span>
           </div>
           <div class="table-wrap">
             <table class="table-new-shoes">
@@ -502,7 +512,7 @@
         <div class="new-shoes-product-family">
           <div class="new-shoes-product-family-header">
             <h5 class="new-shoes-product-family-title">Pipestone — Ship: 07/15/26</h5>
-            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-irishsetter-pipestone">0 pr | $0</span>
+            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-irishsetter-pipestone">0 pairs | $0</span>
           </div>
           <div class="table-wrap">
             <table class="table-new-shoes">
@@ -520,7 +530,7 @@
         <div class="new-shoes-product-family">
           <div class="new-shoes-product-family-header">
             <h5 class="new-shoes-product-family-title">Wingshooter XD — Ship: 07/15/26</h5>
-            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-irishsetter-wingshooterxd">0 pr | $0</span>
+            <span class="new-shoes-family-total" data-tbody-id="tbody-new-shoes-irishsetter-wingshooterxd">0 pairs | $0</span>
           </div>
           <div class="table-wrap">
             <table class="table-new-shoes">
@@ -546,10 +556,12 @@
     <!-- SEASONAL FOOTWEAR -->
     <section id="panel-existing" class="panel" role="tabpanel">
       <details class="collapsible-section">
-        <summary><span class="seasonal-summary-title">SEASONAL FOOTWEAR</span><span class="new-shoes-family-total"><span id="existing-total-pair-header">0</span> pr | <span id="existing-total-price-header">$0</span></span></summary>
+        <summary><span class="seasonal-summary-title">SEASONAL FOOTWEAR</span><span class="new-shoes-family-total"><span id="existing-total-pair-header">0</span> pairs | <span id="existing-total-price-header">$0</span></span></summary>
 
         <div class="seasonal-section">
-          <h4 class="seasonal-section-title">Red Wing</h4>
+          <div class="new-shoes-product-family-header">
+            <h5 class="new-shoes-product-family-title">Red Wing</h5>
+          </div>
           <div class="table-wrap">
             <table class="table-seasonal">
               <thead>
@@ -566,7 +578,9 @@
         </div>
 
         <div class="seasonal-section">
-          <h4 class="seasonal-section-title">Irish Setter Hunt</h4>
+          <div class="new-shoes-product-family-header">
+            <h5 class="new-shoes-product-family-title">Irish Setter Hunt</h5>
+          </div>
           <div class="table-wrap">
             <table class="table-seasonal">
               <thead>
@@ -583,7 +597,9 @@
         </div>
 
         <div class="seasonal-section">
-          <h4 class="seasonal-section-title">Irish Setter Lifestyle</h4>
+          <div class="new-shoes-product-family-header">
+            <h5 class="new-shoes-product-family-title">Irish Setter Lifestyle</h5>
+          </div>
           <div class="table-wrap">
             <table class="table-seasonal">
               <thead>
@@ -599,24 +615,36 @@
           </div>
         </div>
 
-        <div class="seasonal-total">
-          <strong>SEASONAL FOOTWEAR TOTAL</strong>
-          <span id="existing-total-pair" class="num-col">0</span> pairs &nbsp;|&nbsp;
-          <span id="existing-total-price" class="num-col">0</span>
+        <div class="sr-only" aria-hidden="true">
+          <span id="existing-total-pair">0</span>
+          <span id="existing-total-price">0</span>
         </div>
       </details>
     </section>
 
-    <!-- CARE PRODUCTS & MISC -->
+    <!-- HEADWEAR -->
     <section id="panel-care" class="panel" role="tabpanel">
       <details class="collapsible-section">
-        <summary>CARE PRODUCTS & MISC</summary>
+        <summary><span class="care-summary-title">HEADWEAR</span><span class="new-shoes-family-total"><span id="care-total-qty-header">0</span> units | <span id="care-total-price-header">$0</span></span></summary>
         <div class="care-section">
           <div id="care-groups"></div>
-          <div class="care-total">
-            <strong>Total Care Products</strong>
-            <span id="care-total-qty" class="num-col">0</span> units &nbsp;|&nbsp;
-            <span id="care-total-price" class="num-col">0</span>
+          <div class="sr-only" aria-hidden="true">
+            <span id="care-total-qty">0</span>
+            <span id="care-total-price">0</span>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- LEATHER GOODS -->
+    <section id="panel-leather" class="panel" role="tabpanel">
+      <details class="collapsible-section">
+        <summary><span class="care-summary-title">LEATHER GOODS</span><span class="new-shoes-family-total"><span id="leather-total-qty-header">0</span> units | <span id="leather-total-price-header">$0</span></span></summary>
+        <div class="care-section">
+          <div id="leather-groups"></div>
+          <div class="sr-only" aria-hidden="true">
+            <span id="leather-total-qty">0</span>
+            <span id="leather-total-price">0</span>
           </div>
         </div>
       </details>
@@ -625,70 +653,61 @@
     <!-- BELTS -->
     <section id="panel-belts" class="panel" role="tabpanel">
       <details class="collapsible-section">
-        <summary>BELTS</summary>
-        <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Ship Date</th>
-              <th>Stock #</th>
-              <th>Description</th>
-              <th>W26</th><th>W28</th><th>W30</th><th>W32</th><th>W34</th><th>W36</th><th>W38</th><th>W40</th><th>W42</th><th>W44</th><th>W46</th><th>W48</th><th>W50</th><th>W52</th><th>W54</th>
-              <th>Qty Total</th>
-              <th>Price</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-belts"></tbody>
-          <tfoot>
-            <tr class="total-row">
-              <td colspan="19">TOTAL BELTS</td>
-              <td id="belts-total-qty" class="num-col">0</td>
-              <td></td>
-              <td id="belts-total-price" class="num-col">0</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-      </details>
-    </section>
-
-    <!-- GLOVES & SCUFFS -->
-    <section id="panel-gloves" class="panel" role="tabpanel">
-      <details class="collapsible-section">
-        <summary>GLOVES & SCUFFS</summary>
-        <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Ship Date</th>
-              <th>Stock #</th>
-              <th>Description</th>
-              <th>XSM</th><th>SML</th><th>MED</th><th>LRG</th><th>XLG</th><th>XXL</th>
-              <th>Qty Total</th>
-              <th>Price</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-gloves"></tbody>
-          <tfoot>
-            <tr class="total-row">
-              <td colspan="10">Total Gloves, Misc</td>
-              <td id="gloves-total-qty" class="num-col">0</td>
-              <td></td>
-              <td id="gloves-total-price" class="num-col">0</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
+        <summary><span class="care-summary-title">BELTS</span><span class="new-shoes-family-total"><span id="belts-total-qty-header">0</span> units | <span id="belts-total-price-header">$0</span></span></summary>
+        <div class="belts-section">
+          <div class="new-shoes-product-family-header">
+            <h5 class="new-shoes-product-family-title">Leather Belts — Ship: 08/15/26</h5>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Stock #</th>
+                  <th>Description</th>
+                  <th>W26</th><th>W28</th><th>W30</th><th>W32</th><th>W34</th><th>W36</th><th>W38</th><th>W40</th><th>W42</th><th>W44</th><th>W46</th><th>W48</th><th>W50</th><th>W52</th><th>W54</th>
+                  <th>Qty Total</th>
+                  <th>Price</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-belts"></tbody>
+            </table>
+          </div>
+          <div class="new-shoes-product-family-header">
+            <h5 class="new-shoes-product-family-title">QR Nylon Belts — Ship: 08/15/26</h5>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Stock #</th>
+                  <th>Description</th>
+                  <th>W26</th><th>W28</th><th>W30</th><th>W32</th><th>W34</th><th>W36</th><th>W38</th><th>W40</th><th>W42</th><th>W44</th><th>W46</th><th>W48</th><th>W50</th><th>W52</th><th>W54</th>
+                  <th>Qty Total</th>
+                  <th>Price</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-belts-qr"></tbody>
+            </table>
+          </div>
+          <div class="sr-only" aria-hidden="true">
+            <span id="belts-total-qty">0</span>
+            <span id="belts-total-price">0</span>
+          </div>
+        </div>
       </details>
     </section>
 
     <!-- SLIPPERS -->
     <section id="panel-slippers" class="panel" role="tabpanel">
       <details class="collapsible-section">
-        <summary>SLIPPERS</summary>
-        <div class="table-wrap">
+        <summary><span class="care-summary-title">SLIPPERS</span><span class="new-shoes-family-total"><span id="slippers-total-pairs-header">0</span> pairs | <span id="slippers-total-price-header">$0</span></span></summary>
+        <div class="slippers-section">
+          <div class="new-shoes-product-family-header">
+            <h5 class="new-shoes-product-family-title">Seasonal Slippers — Ship Date: 8/1/26 – 12/15/26</h5>
+          </div>
+          <div class="table-wrap">
         <table>
           <thead>
             <tr>
@@ -703,16 +722,13 @@
             </tr>
           </thead>
           <tbody id="tbody-slippers"></tbody>
-          <tfoot>
-            <tr class="total-row">
-              <td colspan="21">TOTAL SLIPPERS</td>
-              <td id="slippers-total-qty" class="num-col">0</td>
-              <td></td>
-              <td id="slippers-total-price" class="num-col">0</td>
-            </tr>
-          </tfoot>
         </table>
-      </div>
+          </div>
+          <div class="sr-only" aria-hidden="true">
+            <span id="slippers-total-qty">0</span>
+            <span id="slippers-total-price">0</span>
+          </div>
+        </div>
       </details>
     </section>
 
@@ -744,22 +760,22 @@
                 <td id="order-summary-seasonal" class="num-col">$0</td>
               </tr>
               <tr>
-                <td>Care Products &amp; Misc</td>
+                <td>Headwear</td>
                 <td class="num-col">–</td>
                 <td id="order-summary-care-units" class="num-col">0</td>
                 <td id="order-summary-care" class="num-col">$0</td>
+              </tr>
+              <tr>
+                <td>Leather Goods</td>
+                <td class="num-col">–</td>
+                <td id="order-summary-leather-units" class="num-col">0</td>
+                <td id="order-summary-leather" class="num-col">$0</td>
               </tr>
               <tr>
                 <td>Belts</td>
                 <td class="num-col">–</td>
                 <td id="order-summary-belts-units" class="num-col">0</td>
                 <td id="order-summary-belts" class="num-col">$0</td>
-              </tr>
-              <tr>
-                <td>Gloves &amp; Scuffs</td>
-                <td class="num-col">–</td>
-                <td id="order-summary-gloves-units" class="num-col">0</td>
-                <td id="order-summary-gloves" class="num-col">$0</td>
               </tr>
               <tr>
                 <td>Slippers</td>
