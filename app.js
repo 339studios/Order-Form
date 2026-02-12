@@ -256,7 +256,7 @@
         var pricePerPair = (newShoesStylePrice[styleKey] != null) ? newShoesStylePrice[styleKey] : defaultPricePerPair;
         var html = '';
         if (firstInGroup) {
-          html += '<td class="new-shoes-style-img" rowspan="' + styleRows.length + '"><span class="new-shoes-style-num">' + styleKey + '</span><img src="' + getImagesBase() + 'Images/' + styleKey + '.png" alt="' + styleKey + '"><span class="new-shoes-style-price">$' + pricePerPair + '</span></td>';
+          html += '<td class="new-shoes-style-img" rowspan="' + styleRows.length + '"><span class="new-shoes-style-num">' + styleKey + '</span><img src="' + getImagesBase() + 'Images/' + styleKey + '.png" alt="' + styleKey + '" loading="lazy"><span class="new-shoes-style-price">$' + pricePerPair + '</span></td>';
           html += '<td class="new-shoes-package" rowspan="' + styleRows.length + '"><select class="new-shoes-package-select"><option value="" selected></option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select></td>';
         } else if (!styleKey) {
           html += '<td></td><td></td>';
@@ -280,7 +280,7 @@
         tr.innerHTML = html;
         tbody.appendChild(tr);
         tr.querySelectorAll('input.new-shoes-size').forEach(function (input) {
-          input.addEventListener('input', updateNewShoesRow);
+          input.addEventListener('input', function (ev) { updateNewShoesRow(ev); });
         });
         if (firstInGroup && styleKey) {
           tr.querySelector('.new-shoes-package-select').addEventListener('change', function () {
@@ -300,7 +300,50 @@
     });
   }
 
-  function updateNewShoesRow() {
+  function updateSingleNewShoesRow(tr) {
+    var inputs = tr.querySelectorAll('input.new-shoes-size');
+    var sum = 0;
+    inputs.forEach(function (inp) { sum += parseInt(inp.value, 10) || 0; });
+    var pairCell = tr.querySelector('.new-shoes-total-pairs');
+    var totalCell = tr.querySelector('.new-shoes-row-total');
+    var pricePerPair = (newShoesStylePrice[tr.dataset.style] != null) ? newShoesStylePrice[tr.dataset.style] : defaultPricePerPair;
+    if (pairCell) pairCell.textContent = sum;
+    if (totalCell) totalCell.textContent = formatCurrency(sum * pricePerPair);
+  }
+
+  function updateNewShoesFamilyTotalsForTbody(tbodyId) {
+    var tbody = document.getElementById(tbodyId);
+    if (!tbody) return;
+    var pairs = 0, dollars = 0;
+    tbody.querySelectorAll('tr').forEach(function (tr) {
+      var p = tr.querySelector('.new-shoes-total-pairs');
+      var t = tr.querySelector('.new-shoes-row-total');
+      if (p) pairs += parseInt(p.textContent, 10) || 0;
+      if (t) dollars += parseCurrencyText(t.textContent);
+    });
+    var el = document.querySelector('.new-shoes-family-total[data-tbody-id="' + tbodyId + '"]');
+    if (el) el.textContent = pairs + ' pairs | ' + formatCurrency(dollars);
+  }
+
+  function parseFamilyTotalText(text) {
+    if (!text || typeof text !== 'string') return { pairs: 0, dollars: 0 };
+    var parts = text.split('|').map(function (s) { return s.trim(); });
+    var pairs = 0, dollars = 0;
+    if (parts[0]) pairs = parseInt(parts[0].replace(/\s*pairs?\s*/i, ''), 10) || 0;
+    if (parts[1]) dollars = parseCurrencyText(parts[1]);
+    return { pairs: pairs, dollars: dollars };
+  }
+
+  function updateNewShoesRow(ev) {
+    var input = ev && ev.target;
+    var tr = input && input.closest && input.closest('tr');
+    if (tr && tr.querySelector('input.new-shoes-size')) {
+      updateSingleNewShoesRow(tr);
+      var tbody = tr.closest('tbody');
+      if (tbody && tbody.id) updateNewShoesFamilyTotalsForTbody(tbody.id);
+      updateNewShoesTotals();
+      return;
+    }
     Object.keys(newShoesBrandConfig).forEach(function (key) {
       var config = newShoesBrandConfig[key];
       config.productFamilies.forEach(function (pf) {
@@ -308,14 +351,7 @@
         if (!tbody) return;
         tbody.querySelectorAll('tr').forEach(function (tr) {
           if (tr.classList.contains('new-shoes-style-group')) return;
-          var inputs = tr.querySelectorAll('input.new-shoes-size');
-          var sum = 0;
-          inputs.forEach(function (inp) { sum += parseInt(inp.value, 10) || 0; });
-          var pairCell = tr.querySelector('.new-shoes-total-pairs');
-          var totalCell = tr.querySelector('.new-shoes-row-total');
-          var pricePerPair = (newShoesStylePrice[tr.dataset.style] != null) ? newShoesStylePrice[tr.dataset.style] : defaultPricePerPair;
-          if (pairCell) pairCell.textContent = sum;
-          if (totalCell) totalCell.textContent = formatCurrency(sum * pricePerPair);
+          updateSingleNewShoesRow(tr);
         });
       });
     });
@@ -327,17 +363,7 @@
     Object.keys(newShoesBrandConfig).forEach(function (key) {
       var config = newShoesBrandConfig[key];
       config.productFamilies.forEach(function (pf) {
-        var tbody = document.getElementById(pf.tbodyId);
-        if (!tbody) return;
-        var pairs = 0, dollars = 0;
-        tbody.querySelectorAll('tr').forEach(function (tr) {
-          var p = tr.querySelector('.new-shoes-total-pairs');
-          var t = tr.querySelector('.new-shoes-row-total');
-          if (p) pairs += parseInt(p.textContent, 10) || 0;
-          if (t) dollars += parseCurrencyText(t.textContent);
-        });
-        var el = document.querySelector('.new-shoes-family-total[data-tbody-id="' + pf.tbodyId + '"]');
-        if (el) el.textContent = pairs + ' pairs | ' + formatCurrency(dollars);
+        updateNewShoesFamilyTotalsForTbody(pf.tbodyId);
       });
     });
   }
@@ -348,15 +374,11 @@
       var config = newShoesBrandConfig[key];
       var brandPairs = 0, brandDollars = 0;
       config.productFamilies.forEach(function (pf) {
-        var tbody = document.getElementById(pf.tbodyId);
-        if (tbody) {
-          tbody.querySelectorAll('tr').forEach(function (tr) {
-            if (tr.classList.contains('new-shoes-style-group')) return;
-            var p = tr.querySelector('.new-shoes-total-pairs');
-            var t = tr.querySelector('.new-shoes-row-total');
-            if (p) brandPairs += parseInt(p.textContent, 10) || 0;
-            if (t) brandDollars += parseCurrencyText(t.textContent);
-          });
+        var el = document.querySelector('.new-shoes-family-total[data-tbody-id="' + pf.tbodyId + '"]');
+        if (el) {
+          var parsed = parseFamilyTotalText(el.textContent);
+          brandPairs += parsed.pairs;
+          brandDollars += parsed.dollars;
         }
       });
       totalPairs += brandPairs;
@@ -370,7 +392,6 @@
     var elTotal = document.getElementById('new-shoes-total');
     if (elPairs) elPairs.textContent = totalPairs;
     if (elTotal) elTotal.textContent = formatCurrency(totalDollars);
-
     updateOrderSummaryTotals();
   }
 
@@ -429,7 +450,7 @@
             html += '<td rowspan="' + rowSpan + '"><input type="date" class="existing-shipdate" min="2026-08-15" max="2026-12-15" value="2026-08-15"></td>';
             html += '<td rowspan="' + rowSpan + '" class="new-shoes-style-img">' +
               '<span class="new-shoes-style-num">' + style + '</span>' +
-              '<img src="' + imgSrc + '" alt="' + style + '" onerror="this.onerror=null;this.src=\'' + fallbackImg + '\';this.classList.add(\'img-fallback\');">' +
+              '<img src="' + imgSrc + '" alt="' + style + '" loading="lazy" onerror="this.onerror=null;this.src=\'' + fallbackImg + '\';this.classList.add(\'img-fallback\');">' +
               '<span class="new-shoes-style-price">$' + price + '</span>' +
               '</td>';
           }
@@ -548,7 +569,7 @@
         tr.innerHTML =
           '<td class="new-shoes-style-img">' +
             '<span class="new-shoes-style-num">' + p.stock + '</span>' +
-            '<img src="' + imgSrc + '" alt="' + p.stock + '" onerror="this.onerror=null;this.src=\'' + fallbackImg + '\';this.classList.add(\'img-fallback\');">' +
+            '<img src="' + imgSrc + '" alt="' + p.stock + '" loading="lazy" onerror="this.onerror=null;this.src=\'' + fallbackImg + '\';this.classList.add(\'img-fallback\');">' +
             '<span class="new-shoes-style-price">$' + p.price + '</span>' +
           '</td>' +
           '<td>' + p.desc + '</td>' +
@@ -652,7 +673,7 @@
         tr.innerHTML =
           '<td class="new-shoes-style-img">' +
             '<span class="new-shoes-style-num">' + p.stock + '</span>' +
-            '<img src="' + imgSrc + '" alt="' + p.stock + '" onerror="this.onerror=null;this.src=\'' + fallbackImg + '\';this.classList.add(\'img-fallback\');">' +
+            '<img src="' + imgSrc + '" alt="' + p.stock + '" loading="lazy" onerror="this.onerror=null;this.src=\'' + fallbackImg + '\';this.classList.add(\'img-fallback\');">' +
             '<span class="new-shoes-style-price">$' + p.price + '</span>' +
           '</td>' +
           '<td>' + p.desc + '</td>' +
@@ -710,7 +731,7 @@
       tr.innerHTML =
         '<td class="new-shoes-style-img">' +
           '<span class="new-shoes-style-num">' + p.stock + '</span>' +
-          '<img src="' + imgSrc + '" alt="' + p.stock + '" onerror="this.onerror=null;this.src=\'' + fallbackImg + '\';this.classList.add(\'img-fallback\');">' +
+          '<img src="' + imgSrc + '" alt="' + p.stock + '" loading="lazy" onerror="this.onerror=null;this.src=\'' + fallbackImg + '\';this.classList.add(\'img-fallback\');">' +
           '<span class="new-shoes-style-price">$' + p.price + '</span>' +
         '</td>' +
         '<td>' + p.desc + '</td>';
@@ -773,7 +794,7 @@
         '<td><input type="date" class="slipper-shipdate" min="2026-08-01" max="2026-12-15" value="2026-08-01"></td>' +
         '<td class="new-shoes-style-img">' +
           '<span class="new-shoes-style-num">' + p.stock + '</span>' +
-          '<img src="' + imgSrc + '" alt="' + p.stock + '" onerror="this.onerror=null;this.src=\'' + fallbackImg + '\';this.classList.add(\'img-fallback\');">' +
+          '<img src="' + imgSrc + '" alt="' + p.stock + '" loading="lazy" onerror="this.onerror=null;this.src=\'' + fallbackImg + '\';this.classList.add(\'img-fallback\');">' +
           '<span class="new-shoes-style-price">$' + Number(p.price).toFixed(2) + '</span>' +
         '</td>' +
         '<td>' + p.desc + '</td><td>' + p.width + '</td>';
@@ -819,48 +840,47 @@
   var headerStatusInvalidSvg = '<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="11" cy="11" r="10" stroke="currentColor" stroke-width="2"/><path d="M7 7l8 8M15 7l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
   var headerStatusValidSvg = '<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="11" cy="11" r="10" stroke="currentColor" stroke-width="2"/><path d="M6 11l3 3 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
-  function updateOrderInfoStatus() {
-    var el = document.getElementById('order-info-status');
-    if (!el) return;
-    var date = (document.getElementById('date') && document.getElementById('date').value) ? document.getElementById('date').value.trim() : '';
-    var salesRep = (document.getElementById('salesRep') && document.getElementById('salesRep').value) ? document.getElementById('salesRep').value.trim() : '';
-    var valid = date.length > 0 && salesRep.length > 0;
-    el.className = 'header-section-status ' + (valid ? 'valid' : 'invalid');
-    el.innerHTML = valid ? headerStatusValidSvg : headerStatusInvalidSvg;
-    el.setAttribute('aria-label', valid ? 'All required fields complete' : 'Missing required fields');
-    el.setAttribute('title', valid ? 'All required fields complete' : 'Missing required fields');
-  }
-
-  function updateAccountInfoStatus() {
-    var el = document.getElementById('account-info-status');
-    if (!el) return;
-    var account = (document.getElementById('account') && document.getElementById('account').value) ? document.getElementById('account').value.trim() : '';
-    var storeName = (document.getElementById('storeName') && document.getElementById('storeName').value) ? document.getElementById('storeName').value.trim() : '';
-    var address = (document.getElementById('address') && document.getElementById('address').value) ? document.getElementById('address').value.trim() : '';
-    var valid = account.length > 0 && storeName.length > 0 && address.length > 0;
-    el.className = 'header-section-status ' + (valid ? 'valid' : 'invalid');
-    el.innerHTML = valid ? headerStatusValidSvg : headerStatusInvalidSvg;
-    el.setAttribute('aria-label', valid ? 'All required fields complete' : 'Missing required fields');
-    el.setAttribute('title', valid ? 'All required fields complete' : 'Missing required fields');
+  function setHeaderSectionStatus(statusEl, valid) {
+    if (!statusEl) return;
+    statusEl.className = 'header-section-status ' + (valid ? 'valid' : 'invalid');
+    statusEl.innerHTML = valid ? headerStatusValidSvg : headerStatusInvalidSvg;
+    statusEl.setAttribute('aria-label', valid ? 'All required fields complete' : 'Missing required fields');
+    statusEl.setAttribute('title', valid ? 'All required fields complete' : 'Missing required fields');
   }
 
   function bindHeaderSectionValidation() {
+    var orderInfoStatus = document.getElementById('order-info-status');
+    var accountInfoStatus = document.getElementById('account-info-status');
     var dateEl = document.getElementById('date');
+    var salesRepEl = document.getElementById('salesRep');
+    var accountEl = document.getElementById('account');
+    var storeNameEl = document.getElementById('storeName');
+    var addressEl = document.getElementById('address');
+
     if (dateEl && dateEl.type === 'date' && !dateEl.value) {
       var today = new Date();
       dateEl.value = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
     }
-    var orderIds = ['date', 'salesRep'];
-    var accountIds = ['account', 'storeName', 'address'];
-    orderIds.forEach(function (id) {
-      var input = document.getElementById(id);
+
+    function updateOrderInfoStatus() {
+      var date = (dateEl && dateEl.value) ? dateEl.value.trim() : '';
+      var salesRep = (salesRepEl && salesRepEl.value) ? salesRepEl.value.trim() : '';
+      setHeaderSectionStatus(orderInfoStatus, date.length > 0 && salesRep.length > 0);
+    }
+    function updateAccountInfoStatus() {
+      var account = (accountEl && accountEl.value) ? accountEl.value.trim() : '';
+      var storeName = (storeNameEl && storeNameEl.value) ? storeNameEl.value.trim() : '';
+      var address = (addressEl && addressEl.value) ? addressEl.value.trim() : '';
+      setHeaderSectionStatus(accountInfoStatus, account.length > 0 && storeName.length > 0 && address.length > 0);
+    }
+
+    [dateEl, salesRepEl].forEach(function (input) {
       if (input) {
         input.addEventListener('input', updateOrderInfoStatus);
         input.addEventListener('change', updateOrderInfoStatus);
       }
     });
-    accountIds.forEach(function (id) {
-      var input = document.getElementById(id);
+    [accountEl, storeNameEl, addressEl].forEach(function (input) {
       if (input) {
         input.addEventListener('input', updateAccountInfoStatus);
         input.addEventListener('change', updateAccountInfoStatus);

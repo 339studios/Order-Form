@@ -215,7 +215,7 @@
       width: auto;
       display: block;
     }
-    .page-header-text { flex: 1; }
+    .page-header-text { flex: 1; margin-top: 0.35rem; }
     .required-fields-note {
       font-size: 0.95rem;
       color: var(--text-muted);
@@ -247,6 +247,9 @@
       transition: transform 0.2s;
     }
     .collapsible-section[open] summary::before { transform: rotate(90deg); }
+    @media (prefers-reduced-motion: reduce) {
+      .collapsible-section summary::before { transition: none; }
+    }
     #panel-new-shoes .collapsible-section summary .new-shoes-summary-title { margin-right: auto; }
     #panel-existing .collapsible-section summary .seasonal-summary-title { margin-right: auto; }
     #panel-care .collapsible-section summary .care-summary-title,
@@ -304,7 +307,7 @@
   <div class="container">
     <div class="sticky-header">
       <div class="page-header">
-        <img src="Images/redwing-trademark.png" alt="Red Wing" class="page-header-logo" />
+        <img src="Images/redwing-trademark.png" alt="Red Wing" class="page-header-logo" width="120" height="48" decoding="async" />
         <div class="page-header-text">
           <h1>FALL 2026 ORDER FORM</h1>
         </div>
